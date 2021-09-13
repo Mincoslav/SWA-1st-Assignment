@@ -1,15 +1,26 @@
-const Event = function(time, place) {
-    const event = {};
-    event.time = time;
-    event.place = place;
+function Event(time, place) {
+    const _time = time;
+    const _place = place;
 
-    event.getTime = function() {
-        return event.time
-    } 
+    const getTime = () => _time
+    const getPlace = () => _place
 
-    event.getPlace = function() {
-        return event.place
+    return {
+        getTime,
+        getPlace
     }
-
-    return event
 };
+
+
+function DataType(type, unit) {
+    const _type = type
+    const _unit = unit
+
+    const getType = () => _type
+    const getUnit = () => _unit
+
+    return {
+        getType,
+        getUnit
+    }
+}
