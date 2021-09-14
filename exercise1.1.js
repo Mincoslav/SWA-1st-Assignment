@@ -1,6 +1,6 @@
-function Event(time, place) {
-    const _time = time;
-    const _place = place;
+function Event(state, time, place) {
+    const _time = time
+    const _place = place
 
     const getTime = () => _time
     const getPlace = () => _place
@@ -12,7 +12,7 @@ function Event(time, place) {
 };
 
 
-function DataType(type, unit) {
+function DataType(state, type, unit) {
     const _type = type
     const _unit = unit
 
