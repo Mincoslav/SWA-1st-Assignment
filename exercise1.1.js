@@ -405,11 +405,11 @@ function weatherPrediction(state) {
     }
 
     function getMin() {
-        return 0
+        return state.min
     }
 
     function getMax() {
-        return 999
+        return state.max
     }
 
     return {
