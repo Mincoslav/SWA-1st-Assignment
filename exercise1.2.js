@@ -1,4 +1,4 @@
-/*###############Event class################*/
+/*###########Event_DataType class############*/
 
 let Event_DataType = function(time, place, type, unit) {
   this.place = place;
@@ -51,8 +51,93 @@ Temperature.prototype.convertToC = function() {
 Object.setPrototypeOf(Temperature.prototype, WeatherData.prototype);
 
 /*##########Precipitation Class########*/
+
+let Precipetation = function(time, place, type, unit, value){
+  WeatherData.call(this,time, place, type, unit, value)
+}
+Precipetation.prototype.getPrecipetationType = function(){
+  return WeatherData.getType();
+}
+Precipetation.prototype.convertToInches = function(){
+  if (this.unit === "MM") {
+    this.unit = "Inches"
+    this.value = this.value / (25.4)
+  }
+}
+Precipetation.prototype.convertToMM = function(){
+  if (this.unit === "Inches") {
+    this.unit = "MM"
+    this.value = this.value * 25.4
+  }
+}
+Object.setPrototypeOf(Precipetation.prototype, WeatherData.prototype)
 /*##############Wind Class#############*/
-/*#########CloudCoverage Class#########*/
+
+let Wind = function(time, place, type, unit, value, direction){
+  WeatherData.call(this,time, place, type, unit, value)
+  this.direction = direction
+}
+Wind.prototype.getDirection = function(){
+  return this.direction
+}
+Wind.prototype.convertToMPH = function(){
+  if (this.unit === "MS") {
+    this.unit = "MPH"
+    this.value = this.value*2.237
+  }
+}
+Wind.prototype.convertToMS = function(){
+  if (this.unit === "MPH") {
+    this.unit = "MS"
+    this.value = this.value/2.237
+  }
+}
+Object.setPrototypeOf(Wind.prototype, WeatherData.prototype)
+
+
+/*#########CloudCoverage Class#########*
+
+/* this class is originally empty so I got creative :))*/
+let CloudCoverage = function(time, place, type, unit, value, sky){
+  WeatherData.call(this,time, place, type, unit, value)
+  this.sky = sky
+}
+CloudCoverage.prototype.getSkyStatus = function(){
+  switch (this.value) {
+  case 0:
+    this.sky = "the sky is empty";
+      break;
+  case 1:
+    this.sky = "Clear";
+      break;
+  case 2:
+    this.sky = "Clear";
+      break;
+  case 3:
+    this.sky = "Kinda cloudy";
+      break;
+  case 4:
+    this.sky = "Half Cloudy";
+      break;
+  case 5:
+    this.sky = "Half Cloudy";
+      break;
+  case 6:
+    this.sky = "very Cloudy";
+      break;
+  case 7:
+    this.sky = "very Cloudy";
+      break;
+  case 8:
+    this.sky = "Completely Cloudy";
+      break;
+  case 9:
+    this.sky = "obstructed from view"
+  }
+  return "the sky is " + this.sky
+}
+Object.setPrototypeOf(CloudCoverage.prototype, WeatherData.prototype)
+
 /*##########DateInterval Class#########*/
 
 let DateInterval = function name(from, to) {
@@ -74,12 +159,11 @@ DateInterval.prototype.contains = function (date){
 }
 
 /*#########WeatherHistory Class########*/
-let WeatherHistory = function([]){
-  this.data = []
+let WeatherHistory = function(data){
+  this.data = data
+  data = []
 }
 
 /*########tester#######*/
-let temp = new Temperature("something", "Horsens", "Temperature", 'C', 24)
-temp.convertToF()
-temp.convertToC()
-console.log(temp.getValue()+" "+temp.getUnit())
+ let cloude1 = new CloudCoverage("soemthing", "Horsens","CloudeCoverage", "Okta",9,"")
+ console.log(cloude1.getSkyStatus());
