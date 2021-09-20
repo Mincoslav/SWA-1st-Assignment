@@ -30,13 +30,13 @@ function dataType(state) {
     }
 };
 
-function dateInterval(state){
-    
+function dateInterval(fromDate, toDate){
+
     function getFrom() {
-        return state.from
+        return fromDate
     } 
     function getTo() {
-        return state.to
+        return toDate
     }
 
     function contains(date) {
@@ -146,15 +146,15 @@ function precipitation(time, place, type, unit, value) {
     }
 }
 
-// TESTER CODE
-const data = precipitation(time=Date(), place='Horsens', type='Precipitation', unit='MM', value=30 )
-console.log(data.toString())
-console.log(data.getUnit())
-console.log(data.getValue())
-data.convertToInches()
-console.log(data.getUnit())
-console.log(data.getValue())
-console.log(data.getPlace())
+// // TESTER CODE
+// const data = precipitation(time=Date(), place='Horsens', type='Precipitation', unit='MM', value=30 )
+// console.log(data.toString())
+// console.log(data.getUnit())
+// console.log(data.getValue())
+// data.convertToInches()
+// console.log(data.getUnit())
+// console.log(data.getValue())
+// console.log(data.getPlace())
 
 
 function wind(direction, time, place, type, unit, value) {
@@ -188,7 +188,7 @@ function wind(direction, time, place, type, unit, value) {
     }
 }
 // TESTER CODE
-// const data = wind(direction='West', time=Date(), place= 'Horsens', type='Wind', unit='M/S', value=3 )
+// const data = wind(direction='West', time=Date(), place= 'Horsens', type='Wind', unit='M/S', value=3)
 // console.log(data.toString())
 // console.log(data.getUnit())
 // console.log(data.getValue())
@@ -214,54 +214,445 @@ function wind(direction, time, place, type, unit, value) {
 
 
 
+function WeatherHistory() {
+    let placeFilter = ''
+    let typeFilter = ''
+    let periodFilter = ''
+
+    //Contains WeatherData objects
+    let data = []
+    // const filteredData = []
+
+    function getData() {
+        return data
+    }
+
+    function getPlaceFilter() {
+        return placeFilter
+    }    
+
+    function setPlaceFilter(place) {
+        placeFilter = place
+    }
+
+    function clearPlaceFilter() {
+        placeFilter = ''
+    }
+
+    function getTypeFilter() {
+        return placeFilter
+    }    
+
+    function setTypeFilter(type) {
+        typeFilter = type
+    }
+
+    function clearTypeFilter() {
+        typeFilter = ''
+    }
+
+    function getPeriodFilter() {
+        return periodFilter
+    }    
+
+    function setPeriodFilter(period) {
+        periodFilter = period
+    }
+
+    function clearPeriodFilter() {
+        periodFilter = ''
+    }
+
+    function convertToUSUnits() {
+        data.forEach(dataPoint => {
+            if(dataPoint.getType() === 'Wind') {
+                dataPoint.convertToMPH()
+            }
+            else if(dataPoint.getType() === 'Temperature') {
+                dataPoint.convertToF()
+            }
+            else if(dataPoint.getType() === 'Precipitation') {
+                dataPoint.convertToInches()
+            }
+        })
+    }
+
+    function convertToInternationalUnits() {
+        data.forEach((dataPoint) => {
+            if(dataPoint.getType() === 'Wind') {
+                dataPoint.convertToMperS()
+            }
+            else if(dataPoint.getType() === 'Temperature') {
+                dataPoint.convertToC()
+            }
+            else if(dataPoint.getType() === 'Precipitation') {
+                dataPoint.convertToMM()
+            }
+        })
+    }
+
+    //"extraData" is an array of type WeatherData
+    function add(extraData) {
+        data = data.concat(extraData)
+    }
+
+    function getFilteredData() {
+        //FILTER THE DATA FROM "data" to "filteredData"
+        
+        if (typeFilter === '' && placeFilter === '' && periodFilter === '') {
+            filteredData = data
+        }
+        else if (typeFilter !== '' && placeFilter !== '' && periodFilter !== '') {
+            filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter 
+            && dataPoint.getPlace() === placeFilter 
+            && getPeriodFilter().contains(dataPoint.getTime()));
+        }
+        else if (typeFilter !== '' && placeFilter === '' && periodFilter === '') {
+            filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter);
+        }
+        else if (typeFilter === '' && placeFilter !== '' && periodFilter === '') {
+            filteredData = data.filter(dataPoint => dataPoint.getPlace() === placeFilter);
+        }
+        else if (typeFilter === '' && placeFilter === '' && periodFilter !== '') {
+            filteredData = data.filter(dataPoint => getPeriodFilter().contains(dataPoint.getTime()));
+        }
+        else if (typeFilter !== '' && placeFilter !== '' && periodFilter === '') {
+            filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter
+            && dataPoint.getPlace() === placeFilter);
+        }
+        else if (typeFilter !== '' && placeFilter === '' && periodFilter !== '') {
+            filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter);
+        }
+        else if (typeFilter === '' && placeFilter !== '' && periodFilter !== '') {
+            filteredData = data.filter(dataPoint => dataPoint.getPlace() === placeFilter 
+            && getPeriodFilter().contains(dataPoint.getTime()));
+        }        
+        else {
+            filteredData = data
+        }
+        
+        return filteredData
+    }
+
+    return {
+        getPlaceFilter,
+        getTypeFilter,
+        getPeriodFilter,
+        setPlaceFilter,
+        setTypeFilter,
+        setPeriodFilter,
+        clearPlaceFilter,
+        clearTypeFilter,
+        clearPeriodFilter,
+        convertToInternationalUnits,
+        convertToUSUnits,
+        add,
+        getFilteredData,
+        getData
+    }
+}
 
 
-// function WeatherHistory() {
+//WEATHER HISTORY TESTING
+const fromTester = new Date('December 17, 1995 03:24:00')
+const toTester = new Date('December 17, 2021 05:00:00')
+
+const interval = dateInterval(fromTester, toTester) 
+
+const currentTime = new Date('September 17, 2000 15:35:00')
+
+const data1 = wind(direction='West', time=currentTime, place= 'Horsens', type='Wind', unit='M/S', value=3)
+const data2 = wind(direction='East', time=currentTime, place= 'Aarhus', type='Wind', unit='MPH', value=15)
+
+const data3 = temperature(time=currentTime, place= 'Horsens', type='Temperature', unit='C', value=30)
+const data4 = temperature( time=currentTime, place= 'Aarhus', type='Temperature', unit='F', value=69)
+
+const data5 = precipitation(time=currentTime, place= 'Horsens', type='Precipitation', unit='MM', value=30)
+const data6 = precipitation(time=currentTime, place= 'Aarhus', type='Precipitation', unit='Inch', value=3)
+
+dataList = [data1, data2, data3, data4, data5, data6]
+// console.log(dataList)
+
+const history = WeatherHistory()
+// history.setPlaceFilter('Horsens')
+// history.setTypeFilter('Temperature')
+history.setPeriodFilter(interval)
+// console.log(history)
+history.add(dataList)
+
+// console.log(history.getFilteredData())
+list = history.getFilteredData()
+
+for (let index = 0; index < list.length; index++) {
+    console.log(list[index].toString())
     
-// }
+}
+//END OF WEATHER HISTORY TESTING
 
 
 
-// function weatherPrediction(weatherPredictionState) {
-//     const _data = weatherData()
-//     const state = {weatherPredictionState}
-//     const event = eventNature(state)
-//     const type = dataType(state)
+function weatherPrediction(state) {
 
-//     function matches(data) {
-//         return data.time === _data.getTime() 
-//         && data.place === _data.getPlace()
-//         && data.type === _data.getType()
-//         && data.unit === _data.getUnit()
-//         && data.value === _data.getValue()
-//     }
+    const event = eventNature(state)
+    const type = dataType(state)
 
-//     function getMin() {
-//         return 0
-//     }
+    function matches(data) {
+        return data.getData() === state.getTime() 
+        && data.getPlace() === state.getPlace()
+        && data.getType() === state.getType()
+        && data.getUnit() === state.getUnit()
+        && data.getValue() === state.getValue()
+    }
 
-//     function getMax() {
-//         return 999
-//     }
+    function getMin() {
+        return 0
+    }
 
-//     return {
-//         ...event, ...type, matches, getMax, getMin
-//     }
-// }
+    function getMax() {
+        return 999
+    }
 
-// function temperaturePrediction() {
+    return {
+        ...event, ...type, matches, getMin, getMax 
+    }
+}
 
-// }
+function temperaturePrediction(time, place, type, unit, value) {
+    
+    const state = {time, place, type, unit, value}
+    const weatherPredictionState = weatherPrediction(state)
+    
+    function convertToF() {
+        if (state.unit === 'C') {
+            state.unit = 'F'
+            state.value = state.value * 1.8 + 32
+        }
+    }
 
-// // const fromTester = new Date('December 17, 1995 03:24:00')
-// // const toTester = new Date('December 17, 2021 05:00:00')
-// // const dateTester = new Date()
-// // const state = {
-// //     fromTester, toTester, dateTester
-// // }
-// // const intervalTester = new DateInterval(state)
+    function convertToC() {
+        if (state.unit === 'F') {
+            state.unit = 'C'
+            state.value = (state.value - 32) / 1.8
+        }
+    }
 
-// // console.log(`${intervalTester.getFrom()}`)
+    function toString() {
+        return state
+    }
 
+    return {
+        ...weatherPredictionState, convertToF, convertToC, toString
+    }
+}
 
-// // console.log(`DATE CONTAINS: ${intervalTester.contains(state.dateTester)}`)
+function precipitationPrediction(time, place, type, unit, value) {
+    const state = {time, place, type, unit, value}
+    const weatherPredictionState = weatherPrediction(state)
+
+    function getExpectedTypes() {
+        return ['Light rain', 'Rain', 'Heavy rain', 'Showers']
+    }
+
+    function matches(data) {
+        return 'Yes'
+    }
+
+    function convertToInches() {
+        if (state.unit === 'MM') {
+            state.unit = 'Inch'
+            state.value = state.value / 25.4
+        }
+    }
+
+    function convertToMM() {
+        if (state.unit === 'Inch') {
+            state.unit = 'MM'
+            state.value = state.value * 25.4
+        }
+    }
+
+    function toString() {
+        return state
+    }
+
+    return {
+        ...weatherDataState, getPrecipitationType, convertToInches, convertToMM, toString
+    }
+} 
+
+function windPrediction(direction, time, place, type, unit, value) {
+    const state = {direction, time, place, type, unit, value}
+    const weatherPredictionState = weatherPrediction(state)
+
+    function getExpectedDirections() {
+        return ['West', 'East', 'North', 'South', 'NorthEast', 'NorthWest', 'SouthEast', 'SouthWest']
+    }
+
+    function matches(date) {
+        return 'Yes'
+    }
+
+    function convertToMPH() {
+        if (state.unit === 'M/S') {
+            state.unit = 'MPH'
+            state.value = state.value * 2.237
+        }
+    }
+
+    function convertToMperS() {
+        if (state.unit === 'MPH') {
+            state.unit = 'M/S'
+            state.value = state.value / 2.237
+        }
+    }
+
+    function toString() {
+        return state
+    }
+
+    return {
+        ...weatherPredictionState, getExpectedDirections, matches, convertToMPH, convertToMperS, toString
+    }
+}
+
+function cloudCoveragePrediction() {
+
+}
+
+function WeatherForecast() {
+    let placeFilter = ''
+    let typeFilter = ''
+    let periodFilter = ''
+
+    //Contains WeatherPrediction objects
+    let data = []
+    // const filteredData = []
+
+    function getData() {
+        return data
+    }
+
+    function getPlaceFilter() {
+        return placeFilter
+    }    
+
+    function setPlaceFilter(place) {
+        placeFilter = place
+    }
+
+    function clearPlaceFilter() {
+        placeFilter = ''
+    }
+
+    function getTypeFilter() {
+        return placeFilter
+    }    
+
+    function setTypeFilter(type) {
+        typeFilter = type
+    }
+
+    function clearTypeFilter() {
+        typeFilter = ''
+    }
+
+    function getPeriodFilter() {
+        return periodFilter
+    }    
+
+    function setPeriodFilter(period) {
+        periodFilter = period
+    }
+
+    function clearPeriodFilter() {
+        periodFilter = ''
+    }
+
+    function convertToUSUnits() {
+        data.forEach(dataPoint => {
+            if(dataPoint.getType() === 'Wind') {
+                dataPoint.convertToMPH()
+            }
+            else if(dataPoint.getType() === 'Temperature') {
+                dataPoint.convertToF()
+            }
+            else if(dataPoint.getType() === 'Precipitation') {
+                dataPoint.convertToInches()
+            }
+        })
+    }
+
+    function convertToInternationalUnits() {
+        data.forEach((dataPoint) => {
+            if(dataPoint.getType() === 'Wind') {
+                dataPoint.convertToMperS()
+            }
+            else if(dataPoint.getType() === 'Temperature') {
+                dataPoint.convertToC()
+            }
+            else if(dataPoint.getType() === 'Precipitation') {
+                dataPoint.convertToMM()
+            }
+        })
+    }
+
+    //"extraData" is an array of type WeatherPrediction
+    function add(extraData) {
+        data = data.concat(extraData)
+    }
+
+    function getFilteredData() {
+        //FILTER THE DATA FROM "data" to "filteredData"
+        
+        if (typeFilter === '' && placeFilter === '' && periodFilter === '') {
+            filteredData = data
+        }
+        else if (typeFilter !== '' && placeFilter !== '' && periodFilter !== '') {
+            filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter 
+            && dataPoint.getPlace() === placeFilter 
+            && getPeriodFilter().contains(dataPoint.getTime()));
+        }
+        else if (typeFilter !== '' && placeFilter === '' && periodFilter === '') {
+            filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter);
+        }
+        else if (typeFilter === '' && placeFilter !== '' && periodFilter === '') {
+            filteredData = data.filter(dataPoint => dataPoint.getPlace() === placeFilter);
+        }
+        else if (typeFilter === '' && placeFilter === '' && periodFilter !== '') {
+            filteredData = data.filter(dataPoint => getPeriodFilter().contains(dataPoint.getTime()));
+        }
+        else if (typeFilter !== '' && placeFilter !== '' && periodFilter === '') {
+            filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter
+            && dataPoint.getPlace() === placeFilter);
+        }
+        else if (typeFilter !== '' && placeFilter === '' && periodFilter !== '') {
+            filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter);
+        }
+        else if (typeFilter === '' && placeFilter !== '' && periodFilter !== '') {
+            filteredData = data.filter(dataPoint => dataPoint.getPlace() === placeFilter 
+            && getPeriodFilter().contains(dataPoint.getTime()));
+        }        
+        else {
+            filteredData = data
+        }
+        
+        return filteredData
+    }
+
+    return {
+        getPlaceFilter,
+        getTypeFilter,
+        getPeriodFilter,
+        setPlaceFilter,
+        setTypeFilter,
+        setPeriodFilter,
+        clearPlaceFilter,
+        clearTypeFilter,
+        clearPeriodFilter,
+        convertToInternationalUnits,
+        convertToUSUnits,
+        add,
+        getFilteredData,
+        getData
+    }
+}
