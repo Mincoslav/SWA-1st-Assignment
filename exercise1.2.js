@@ -339,6 +339,28 @@ class TemperaturePrediction extends WeatherPrediction {
       this.value = (this.value - 32) / 1.8;
     }
   }
+}
 
-  toString() {}
+class PrecipitationPrediction extends WeatherPrediction {
+  constructor(time, place, type, unit, min, max, data) {
+    super(time, place, type, unit, min, max, data);
+  }
+
+  getExpectedTypes() {
+    return ['Light rain', 'Rain', 'Heavy rain', 'Showers']
+  }
+
+  convertToInches() {
+    if (this.unit === 'MM') {
+      this.unit = 'Inch'
+      this.value = this.value / 25.4
+    }
+  }
+
+  convertToMM() {
+    if (this.unit === 'Inch') {
+      this.unit = 'MM'
+      this.value = this.value * 25.4
+    }
+  }
 }
