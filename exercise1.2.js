@@ -405,6 +405,103 @@ class WindPrediciton extends WeatherPrediction{
   }
 
   getExpectedDirections(){
-    
+    return ['the sky is empty', 'Clear', '']
+  }
+
+}
+
+
+/*#########WeatherForecast Class########*/
+class WeatherForecast {
+  constructor(data, placeFilter, typeFilter, periodFilter) {
+    this.data = data;
+    this.placeFilter = placeFilter;
+    this.typeFilter = typeFilter;
+    this.periodFilter = periodFilter;
+  }
+  getPlaceFilter() {
+    return this.getPlaceFilter;
+  }
+  setPlaceFilter(place) {
+    this.placeFilter = place;
+  }
+  clearPlaceFilter() {
+    this.placeFilter = "";
+  }
+  setTypeFilter(type) {
+    this.typeFilter = type;
+  }
+  getTypeFilter() {
+    return this.typeFilter;
+  }
+  clearTypeFilter() {
+    this.periodFilter = "";
+  }
+  setPeriodFilter(period) {
+    this.periodFilter = period;
+  }
+  getPeriodFilter() {
+    return this.periodFilter;
+  }
+  clearPeriodFilter() {
+    this.periodFilter = "";
+  }
+  convertToUSUnits() {
+    data.forEach((item) => {
+      if (item.getType() === "Wind") {
+        item.convertToMPH();
+      } else if (item.getType() === "Temperature") {
+        item.convertToF();
+      } else if (item.getType() === "Precipitation") {
+        item.convertToInches();
+      }
+    });
+  }
+  convertToInternationalUnit() {
+    data.forEach((item) => {
+      if (item.getType() === "Wind") {
+        item.convertToMS();
+      } else if (item.getType() === "Temperature") {
+        item.convertToC();
+      } else if (item.getType() === "Precipitation") {
+        item.convertToMM();
+      }
+    });
+  }
+  add(newData) {
+    this.data.push(newData);
+  }
+  getFilteredPredictions() {
+    if (typeFilter === '' && placeFilter === '' && periodFilter === '') {
+      filteredPredictions = data
+    }
+    else if (typeFilter !== '' && placeFilter !== '' && periodFilter !== '') {
+      filteredPredictions = data.filter(dataPoint => dataPoint.getType() === typeFilter 
+        && dataPoint.getPlace() === placeFilter 
+        && getPeriodFilter().contains(dataPoint.getTime()));
+    }
+    else if (typeFilter !== '' && placeFilter === '' && periodFilter === '') {
+        filteredPredictions = data.filter(dataPoint => dataPoint.getType() === typeFilter);
+    }
+    else if (typeFilter === '' && placeFilter !== '' && periodFilter === '') {
+        filteredPredictions = data.filter(dataPoint => dataPoint.getPlace() === placeFilter);
+    }
+    else if (typeFilter === '' && placeFilter === '' && periodFilter !== '') {
+        filteredPredictions = data.filter(dataPoint => getPeriodFilter().contains(dataPoint.getTime()));
+    }
+    else if (typeFilter !== '' && placeFilter !== '' && periodFilter === '') {
+        filteredPredictions = data.filter(dataPoint => dataPoint.getType() === typeFilter
+        && dataPoint.getPlace() === placeFilter);
+    }
+    else if (typeFilter !== '' && placeFilter === '' && periodFilter !== '') {
+        filteredPredictions = data.filter(dataPoint => dataPoint.getType() === typeFilter);
+    }
+    else if (typeFilter === '' && placeFilter !== '' && periodFilter !== '') {
+        filteredPredictions = data.filter(dataPoint => dataPoint.getPlace() === placeFilter 
+        && getPeriodFilter().contains(dataPoint.getTime()));
+    }        
+    else {
+        filteredPredictions = data
+    }
   }
 }
