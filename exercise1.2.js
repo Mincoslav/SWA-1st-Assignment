@@ -229,12 +229,40 @@ class WeatherHistory {
     this.data.push(newData);
   }
   getFilteredData() {
-    this.data.filter(
-      (item) =>
-        item.getPlace() === this.placeFilter ||
-        item.getType() === this.typeFilter ||
-        this.getPeriodFilter().contains(item.time)
-    );
+    if (typeFilter === '' && placeFilter === '' && periodFilter === '') {
+      filteredData = data
+  }
+  else if (typeFilter !== '' && placeFilter !== '' && periodFilter !== '') {
+      filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter 
+      && dataPoint.getPlace() === placeFilter 
+      && getPeriodFilter().contains(dataPoint.getTime()));
+  }
+  else if (typeFilter !== '' && placeFilter === '' && periodFilter === '') {
+      filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter);
+  }
+  else if (typeFilter === '' && placeFilter !== '' && periodFilter === '') {
+      filteredData = data.filter(dataPoint => dataPoint.getPlace() === placeFilter);
+  }
+  else if (typeFilter === '' && placeFilter === '' && periodFilter !== '') {
+      filteredData = data.filter(dataPoint => getPeriodFilter().contains(dataPoint.getTime()));
+  }
+  else if (typeFilter !== '' && placeFilter !== '' && periodFilter === '') {
+      filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter
+      && dataPoint.getPlace() === placeFilter);
+  }
+  else if (typeFilter !== '' && placeFilter === '' && periodFilter !== '') {
+      filteredData = data.filter(dataPoint => dataPoint.getType() === typeFilter);
+  }
+  else if (typeFilter === '' && placeFilter !== '' && periodFilter !== '') {
+      filteredData = data.filter(dataPoint => dataPoint.getPlace() === placeFilter 
+      && getPeriodFilter().contains(dataPoint.getTime()));
+  }        
+  else {
+      filteredData = data
+  }
+  
+  return filteredData
+
   }
 }
 
@@ -362,5 +390,18 @@ class PrecipitationPrediction extends WeatherPrediction {
       this.unit = 'MM'
       this.value = this.value * 25.4
     }
+  }
+}
+
+/*######## WindPrediction Class #######*/
+
+class WindPrediciton extends WeatherPrediction{
+  constructor(time, place, type, unit, min, max, data, directions) {
+    super(time, place, type, unit, min, max, data);
+    this.directions = directions
+  }
+
+  getExpectedDirections(){
+    
   }
 }
