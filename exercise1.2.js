@@ -328,6 +328,7 @@ history.setPlaceFilter("Horsens");
 list = history.getFilteredData();
 console.log(list);
 
+/*######## WeatherPrediction Class #######*/
 class WeatherPrediction extends Event_DataType {
   constructor(time, place, type, unit, min, max, data) {
     super(time, place, type, unit);
@@ -349,6 +350,7 @@ class WeatherPrediction extends Event_DataType {
   }
 }
 
+/*######## TemperaturePrediction Class #######*/
 class TemperaturePrediction extends WeatherPrediction {
   constructor(time, place, type, unit, min, max, data) {
     super(time, place, type, unit, min, max, data);
@@ -369,6 +371,7 @@ class TemperaturePrediction extends WeatherPrediction {
   }
 }
 
+/*######## PrecipitationPrediction Class #######*/
 class PrecipitationPrediction extends WeatherPrediction {
   constructor(time, place, type, unit, min, max, data) {
     super(time, place, type, unit, min, max, data);
