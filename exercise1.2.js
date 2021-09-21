@@ -323,37 +323,76 @@ const history = new WeatherHistory(dataList, "", "", "");
 //history.setPeriodFilter(inter)
 // console.log(history)
 //history.addNew(dataList)
-history.setPlaceFilter("Horsens");
+//history.setPlaceFilter("Horsens");
 // console.log(history.getFilteredData())
-list = history.getFilteredData();
-console.log(list);
+//list = history.getFilteredData();
+//console.log(list);
 
 /*######## WeatherPrediction Class #######*/
 class WeatherPrediction extends Event_DataType {
-  constructor(time, place, type, unit, min, max, data) {
+  constructor(time, place, type, unit, value) {
     super(time, place, type, unit);
-    this.min = min;
-    this.max = max;
-    this.data = data;
+    this.value = value
+  }
+  getValue(){
+    return this.value
   }
 
-  matches(data) {
-    return data === this.data;
+  matches(arg) {
+    return arg.getTime() == this.getTime()  && arg.getPlace() == this.getPlace() && arg.getType() == this.getType() && arg.getUnit() == this.getUnit() && arg.getValue() == this.getValue()
   }
 
   getMax() {
-    return this.max;
+    let max = 0
+    switch (this.type) {
+      case "Temperature":
+        max = this.value + 0.5;
+        break;
+      case "Precipitation":
+        max = this.value + 2;
+        break;
+      case "Wind":
+        if(unit == "MS"){
+          max = this.value + 1
+        }else{
+          max = this.value + 2,23694
+        }
+        break;
+      case "ClouCoverage":
+        if(this.value != 9)
+        max = this.value + 1;
+    }
+    return max;
   }
 
   getMin() {
-    return this.min;
+    let min = 0
+    switch (this.type) {
+      case "Temperature":
+        min = this.value - 0.5;
+        break;
+      case "Precipitation":
+        min = this.value - 2;
+        break;
+      case "Wind":
+        if(unit == "MS"){
+          min = this.value - 1
+        }else{
+          min = this.value - 2,23694
+        }
+        break;
+      case "ClouCoverage":
+        if(this.value != 1)
+        min = this.value - 1;
+    }
+    return min;
   }
 }
 
 /*######## TemperaturePrediction Class #######*/
 class TemperaturePrediction extends WeatherPrediction {
-  constructor(time, place, type, unit, min, max, data) {
-    super(time, place, type, unit, min, max, data);
+  constructor(time, place, type, unit, value) {
+    super(time, place, type, unit, value);
   }
 
   convertToF() {
@@ -370,15 +409,22 @@ class TemperaturePrediction extends WeatherPrediction {
     }
   }
 }
+//test
+
+let weatherData = new WeatherData(11.40,"Horsens","Temperature","C",24)
+let weatherPrediction = new WeatherPrediction(11.40,"Horsens","Temperature","C",24)
+console.log(weatherPrediction.getMax())
+console.log(weatherPrediction.getMin())
+
 
 /*######## PrecipitationPrediction Class #######*/
 class PrecipitationPrediction extends WeatherPrediction {
-  constructor(time, place, type, unit, min, max, data) {
-    super(time, place, type, unit, min, max, data);
+  constructor(time, place, type, unit) {
+    super(time, place, type, unit);
   }
 
   getExpectedTypes() {
-    return ['Light rain', 'Rain', 'Heavy rain', 'Showers']
+    return ['No rain','Light rain', 'Rain', 'Heavy rain', 'Showers']
   }
 
   convertToInches() {
@@ -399,12 +445,67 @@ class PrecipitationPrediction extends WeatherPrediction {
 /*######## WindPrediction Class #######*/
 
 class WindPrediciton extends WeatherPrediction{
-  constructor(time, place, type, unit, min, max, data, directions) {
+  constructor(time, place, type, unit, directions) {
     super(time, place, type, unit, min, max, data);
     this.directions = directions
   }
 
   getExpectedDirections(){
-    
+    return this.directions
+  }
+  convertToMPH() {
+    if (this.unit === "MS") {
+      this.unit = "MPH";
+      this.value = this.value * 2.237;
+    }
+  }
+  convertToMS() {
+    if (this.unit === "MPH") {
+      this.unit = "MS";
+      this.value = this.value / 2.237;
+    }
+  }
+}
+
+/*########### CloudCoveragePrediction Class ############*/
+
+class CloudCoveragePrediction extends WeatherPrediction {
+  constructor(time, place, type, unit, value, sky) {
+    super(time, place, type, unit, value);
+    this.sky = sky;
+  }
+  getSkyStatusPrediction() {
+    switch (this.value) {
+      case 0:
+        this.sky = "the sky is empty";
+        break;
+      case 1:
+        this.sky = "Clear";
+        break;
+      case 2:
+        this.sky = "Clear";
+        break;
+      case 3:
+        this.sky = "Kinda cloudy";
+        break;
+      case 4:
+        this.sky = "Half Cloudy";
+        break;
+      case 5:
+        this.sky = "Half Cloudy";
+        break;
+      case 6:
+        this.sky = "very Cloudy";
+        break;
+      case 7:
+        this.sky = "very Cloudy";
+        break;
+      case 8:
+        this.sky = "Completely Cloudy";
+        break;
+      case 9:
+        this.sky = "obstructed from view";
+    }
+    return "the sky is " + this.sky;
   }
 }
