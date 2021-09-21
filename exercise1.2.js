@@ -370,3 +370,16 @@ class TemperaturePrediction extends WeatherPrediction {
 
   toString() {}
 }
+
+/*######## WindPrediction Class #######*/
+
+class WindPrediciton extends WeatherPrediction{
+  constructor(time, place, type, unit, min, max, data, directions) {
+    super(time, place, type, unit, min, max, data);
+    this.directions = directions
+  }
+
+  getExpectedDirections(){
+    
+  }
+}
