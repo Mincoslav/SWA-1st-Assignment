@@ -115,12 +115,12 @@ function temperature(time, place, type, unit, value) {
 // console.log(data.getValue())
 // console.log(data.getPlace())
 
-function precipitation(time, place, type, unit, value) {
-    const state = {time, place, type, unit, value}
+function precipitation(precipitationType, time, place, type, unit, value) {
+    const state = {precipitationType, time, place, type, unit, value}
     const weatherDataState = weatherData(state)
 
     function getPrecipitationType() {
-        return state.type
+        return state.precipitationType
     }
 
     function convertToInches() {
@@ -198,19 +198,49 @@ function wind(direction, time, place, type, unit, value) {
 // console.log(data.getPlace())
 
 
-// IS EMPTY???
-// function cloudCoverage(cloudPercentage, time, place, type, unit, value) {
-//     const state = {cloudPercentage, time, place, type, unit, value}
-//     const weatherDataState = weatherData(state)
+function cloudCoverage(time, place, type, unit, value, sky) {
+    const state = {time, place, type, unit, value, sky}
+    const weatherDataState = weatherData(state)
 
-//     function getCloudPercentage() {
-//         return state.cloudPercentage
-//     }
+    function getSkyStatus() {
+        switch (state.value) {
+          case 0:
+            state.sky = "the sky is empty";
+            break;
+          case 1:
+            state.sky = "Clear";
+            break;
+          case 2:
+            state.sky = "Clear";
+            break;
+          case 3:
+            state.sky = "Kinda cloudy";
+            break;
+          case 4:
+            state.sky = "Half Cloudy";
+            break;
+          case 5:
+            state.sky = "Half Cloudy";
+            break;
+          case 6:
+            state.sky = "very Cloudy";
+            break;
+          case 7:
+            state.sky = "very Cloudy";
+            break;
+          case 8:
+            state.sky = "Completely Cloudy";
+            break;
+          case 9:
+            state.sky = "obstructed from view";
+        }
+        return "the sky is " + state.sky;
+    }
 
-//     return {
-//         ...weatherDataState, getCloudPercentage
-//     }
-// }
+    return {
+        ...weatherDataState, getSkyStatus
+    }
+}
 
 
 
@@ -365,10 +395,10 @@ const data1 = wind(direction='West', time=currentTime, place= 'Horsens', type='W
 const data2 = wind(direction='East', time=currentTime, place= 'Aarhus', type='Wind', unit='MPH', value=15)
 
 const data3 = temperature(time=currentTime, place= 'Horsens', type='Temperature', unit='C', value=30)
-const data4 = temperature( time=currentTime, place= 'Aarhus', type='Temperature', unit='F', value=69)
+const data4 = temperature(time=currentTime, place= 'Aarhus', type='Temperature', unit='F', value=69)
 
-const data5 = precipitation(time=currentTime, place= 'Horsens', type='Precipitation', unit='MM', value=30)
-const data6 = precipitation(time=currentTime, place= 'Aarhus', type='Precipitation', unit='Inch', value=3)
+const data5 = precipitation(precipitationType='Rain', time=currentTime, place= 'Horsens', type='Precipitation', unit='MM', value=30)
+const data6 = precipitation(precipitationType='Light Rain', time=currentTime, place= 'Aarhus', type='Precipitation', unit='Inch', value=3)
 
 dataList = [data1, data2, data3, data4, data5, data6]
 // console.log(dataList)
@@ -445,16 +475,17 @@ function temperaturePrediction(time, place, type, unit, value) {
     }
 }
 
-function precipitationPrediction(time, place, type, unit, value) {
-    const state = {time, place, type, unit, value}
+function precipitationPrediction(precipitationType, time, place, type, unit, value) {
+    const state = {precipitationType, time, place, type, unit, value}
     const weatherPredictionState = weatherPrediction(state)
 
     function getExpectedTypes() {
         return ['Light rain', 'Rain', 'Heavy rain', 'Showers']
     }
 
+    //"data" must be of type WeatherData
     function matches(data) {
-        return 'Yes'
+        return weatherPredictionState.matches(data) && data.getPrecipitationType() === state.precipitationType
     }
 
     function convertToInches() {
@@ -476,7 +507,7 @@ function precipitationPrediction(time, place, type, unit, value) {
     }
 
     return {
-        ...weatherDataState, getPrecipitationType, convertToInches, convertToMM, toString
+        ...weatherPredictionState, getExpectedTypes, matches, convertToInches, convertToMM, toString
     }
 } 
 
@@ -488,8 +519,8 @@ function windPrediction(direction, time, place, type, unit, value) {
         return ['West', 'East', 'North', 'South', 'NorthEast', 'NorthWest', 'SouthEast', 'SouthWest']
     }
 
-    function matches(date) {
-        return 'Yes'
+    function matches(data) {
+        return weatherPredictionState.matches(data) && data.getDirection() === state.direction
     }
 
     function convertToMPH() {
@@ -515,8 +546,48 @@ function windPrediction(direction, time, place, type, unit, value) {
     }
 }
 
-function cloudCoveragePrediction() {
+function cloudCoveragePrediction(time, place, type, unit, value, sky) {
+    const state = {time, place, type, unit, value, sky}
+    const weatherPredictionState = weatherPrediction(state)
 
+    function getSkyStatus() {
+        switch (state.value) {
+          case 0:
+            state.sky = "the sky is empty";
+            break;
+          case 1:
+            state.sky = "Clear";
+            break;
+          case 2:
+            state.sky = "Clear";
+            break;
+          case 3:
+            state.sky = "Kinda cloudy";
+            break;
+          case 4:
+            state.sky = "Half Cloudy";
+            break;
+          case 5:
+            state.sky = "Half Cloudy";
+            break;
+          case 6:
+            state.sky = "very Cloudy";
+            break;
+          case 7:
+            state.sky = "very Cloudy";
+            break;
+          case 8:
+            state.sky = "Completely Cloudy";
+            break;
+          case 9:
+            state.sky = "obstructed from view";
+        }
+        return "the sky is " + state.sky;
+    }
+    
+    return {
+        ...weatherPredictionState, getSkyStatus
+    }
 }
 
 function WeatherForecast() {
