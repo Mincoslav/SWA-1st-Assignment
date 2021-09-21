@@ -23,7 +23,7 @@ class Event_DataType {
 
 /*############# WeatherData Class ############*/
 
-class WeatherData extends Event_DataType{
+class WeatherData extends Event_DataType {
   constructor(time, place, type, unit, value) {
     super(time, place, type, unit);
     this.value = value;
@@ -35,19 +35,19 @@ class WeatherData extends Event_DataType{
 
 /*###########Temperature Class#########*/
 
-class Temperature extends WeatherData{
+class Temperature extends WeatherData {
   constructor(time, place, type, unit, value) {
     super(time, place, type, unit, value);
   }
   convertToF() {
-    if (this.unit === 'C') {
-      this.unit = 'F';
+    if (this.unit === "C") {
+      this.unit = "F";
       this.value = this.value * 1.8 + 32;
     }
   }
   convertToC() {
-    if (this.unit === 'F') {
-      this.unit = 'C';
+    if (this.unit === "F") {
+      this.unit = "C";
       this.value = (this.value - 32) / 1.8;
     }
   }
@@ -55,9 +55,9 @@ class Temperature extends WeatherData{
 
 /*##########Precipitation Class########*/
 
-class Precipitation extends WeatherData{
+class Precipitation extends WeatherData {
   constructor(time, place, type, unit, value) {
-   super(time, place, type, unit, value);
+    super(time, place, type, unit, value);
   }
   getPrecipitationType() {
     return WeatherData.getType();
@@ -65,7 +65,7 @@ class Precipitation extends WeatherData{
   convertToInches() {
     if (this.unit === "MM") {
       this.unit = "Inches";
-      this.value = this.value / (25.4);
+      this.value = this.value / 25.4;
     }
   }
   convertToMM() {
@@ -77,7 +77,7 @@ class Precipitation extends WeatherData{
 }
 /*##############Wind Class#############*/
 
-class Wind extends WeatherData{
+class Wind extends WeatherData {
   constructor(time, place, type, unit, value, direction) {
     super(time, place, type, unit, value);
     this.direction = direction;
@@ -102,7 +102,7 @@ class Wind extends WeatherData{
 /*#########CloudCoverage Class#########*
 
 /* this class is originally empty so I got creative :))*/
-class CloudCoverage extends WeatherData{
+class CloudCoverage extends WeatherData {
   constructor(time, place, type, unit, value, sky) {
     super(time, place, type, unit, value);
     this.sky = sky;
@@ -173,8 +173,8 @@ class WeatherHistory {
     this.typeFilter = typeFilter;
     this.periodFilter = periodFilter;
   }
-  getData(){
-    return this.data
+  getData() {
+    return this.data;
   }
   setPlaceFilter(arg) {
     this.placeFilter = arg;
@@ -204,27 +204,23 @@ class WeatherHistory {
     this.periodFilter = "";
   }
   convertToUSUnits() {
-    data.forEach(item => {
-      if (item.getType() === 'Wind') {
+    data.forEach((item) => {
+      if (item.getType() === "Wind") {
         item.convertToMPH();
-      }
-      else if (item.getType() === 'Temperature') {
+      } else if (item.getType() === "Temperature") {
         item.convertToF();
-      }
-      else if (item.getType() === 'Precipitation') {
+      } else if (item.getType() === "Precipitation") {
         item.convertToInches();
       }
     });
   }
   convertToInternationalUnit() {
     data.forEach((item) => {
-      if (item.getType() === 'Wind') {
+      if (item.getType() === "Wind") {
         item.convertToMS();
-      }
-      else if (item.getType() === 'Temperature') {
+      } else if (item.getType() === "Temperature") {
         item.convertToC();
-      }
-      else if (item.getType() === 'Precipitation') {
+      } else if (item.getType() === "Precipitation") {
         item.convertToMM();
       }
     });
@@ -233,37 +229,116 @@ class WeatherHistory {
     this.data.push(newData);
   }
   getFilteredData() {
-    this.data.filter(item => item.getPlace() === this.placeFilter || item.getType() === this.typeFilter || this.getPeriodFilter().contains(item.time))
+    this.data.filter(
+      (item) =>
+        item.getPlace() === this.placeFilter ||
+        item.getType() === this.typeFilter ||
+        this.getPeriodFilter().contains(item.time)
+    );
   }
 }
 
 /*########tester#######*/
 //WEATHER HISTORY TESTING
-const fromTester = new Date('December 17, 1995 03:24:00')
-const toTester = new Date('December 17, 2021 05:00:00')
+const fromTester = new Date("December 17, 1995 03:24:00");
+const toTester = new Date("December 17, 2021 05:00:00");
 
-let inter = new DateInterval(fromTester, toTester)
-const currentTime = new Date('September 17, 2000 15:35:00')
+let inter = new DateInterval(fromTester, toTester);
+const currentTime = new Date("September 17, 2000 15:35:00");
 
-const data1 = new Wind('West',currentTime,'Horsens','Wind','MS', 3)
-const data2 = new Wind(direction='East', time=currentTime, place= 'Aarhus', type='Wind', unit='MPH', value=15)
+const data1 = new Wind("West", currentTime, "Horsens", "Wind", "MS", 3);
+const data2 = new Wind(
+  (direction = "East"),
+  (time = currentTime),
+  (place = "Aarhus"),
+  (type = "Wind"),
+  (unit = "MPH"),
+  (value = 15)
+);
 
-const data3 = new Temperature("", place= 'Horsens', type='Temperature', unit='C', value=30)
-const data4 = new Temperature( time=currentTime, place= 'Aarhus', type='Temperature', unit='F', value=69)
+const data3 = new Temperature(
+  "",
+  (place = "Horsens"),
+  (type = "Temperature"),
+  (unit = "C"),
+  (value = 30)
+);
+const data4 = new Temperature(
+  (time = currentTime),
+  (place = "Aarhus"),
+  (type = "Temperature"),
+  (unit = "F"),
+  (value = 69)
+);
 
-const data5 = new Precipitation(time=currentTime, place= 'Horsens', type='Precipitation', unit='MM', value=30)
-const data6 = new Precipitation(time=currentTime, place= 'Aarhus', type='Precipitation', unit='Inch', value=3)
+const data5 = new Precipitation(
+  (time = currentTime),
+  (place = "Horsens"),
+  (type = "Precipitation"),
+  (unit = "MM"),
+  (value = 30)
+);
+const data6 = new Precipitation(
+  (time = currentTime),
+  (place = "Aarhus"),
+  (type = "Precipitation"),
+  (unit = "Inch"),
+  (value = 3)
+);
 
-dataList = [data1, data2, data3, data4, data5, data6]
+dataList = [data1, data2, data3, data4, data5, data6];
 // console.log(dataList)
 //console.log(dataList)
-const history = new WeatherHistory(dataList,"","","")
+const history = new WeatherHistory(dataList, "", "", "");
 
 //history.setTypeFilter('Temperature')
 //history.setPeriodFilter(inter)
 // console.log(history)
 //history.addNew(dataList)
-history.setPlaceFilter('Horsens')
+history.setPlaceFilter("Horsens");
 // console.log(history.getFilteredData())
-list = history.getFilteredData()
-console.log(list)
+list = history.getFilteredData();
+console.log(list);
+
+class WeatherPrediction extends Event_DataType {
+  constructor(time, place, type, unit, min, max, data) {
+    super(time, place, type, unit);
+    this.min = min;
+    this.max = max;
+    this.data = data;
+  }
+
+  matches(data) {
+    return data === this.data;
+  }
+
+  getMax() {
+    return this.max;
+  }
+
+  getMin() {
+    return this.min;
+  }
+}
+
+class TemperaturePrediction extends WeatherPrediction {
+  constructor(time, place, type, unit, min, max, data) {
+    super(time, place, type, unit, min, max, data);
+  }
+
+  convertToF() {
+    if (this.unit === "C") {
+      this.unit = "F";
+      this.value = this.value * 1.8 + 32;
+    }
+  }
+
+  convertToC() {
+    if (this.unit === "F") {
+      this.unit = "C";
+      this.value = (this.value - 32) / 1.8;
+    }
+  }
+
+  toString() {}
+}
