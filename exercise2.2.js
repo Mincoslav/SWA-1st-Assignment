@@ -24,6 +24,7 @@ function success(responseText) {
     })
     xmlHTTPLatestMeasurements()
     xmlHTTP5DayMinimumTemperature()
+    xmlHTTP5DayMaximumTemperature()
 }
 
 
@@ -94,5 +95,29 @@ function xmlHTTP5DayMinimumTemperature() {
 
     $("#minimumTemperature").text(
         minimumTemperature.value + '° ' + minimumTemperature.unit
+    )
+}
+
+
+function xmlHTTP5DayMaximumTemperature() {
+    let maximumTemperature = {
+        value: -100,
+        unit: ''
+    }
+	let date5daysAgo = getDaysAgo(5)
+
+	let last5daysTemperatures = temperatures.filter(
+		(temperature) => new Date(temperature.time) >= date5daysAgo
+	)
+
+    for (let index = 0; index < last5daysTemperatures.length; index++) {
+        if (maximumTemperature.value < last5daysTemperatures[index].value) {
+            maximumTemperature.value = last5daysTemperatures[index].value
+            maximumTemperature.unit = last5daysTemperatures[index].unit
+        }
+    }
+
+    $("#maximumTemperature").text(
+        maximumTemperature.value + '° ' + maximumTemperature.unit
     )
 }
