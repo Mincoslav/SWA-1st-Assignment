@@ -44,12 +44,14 @@ function DateInterval(state) {
     }
 
     function contains(date) {
-        if(date>getFrom() && date<getTo()) {
-            return true
-        }
-        else {
-            return false
-        }
+        // if(date>getFrom() && date<getTo()) {
+        //     return true
+        // }
+        // else {
+        //     return false
+        // }
+
+        return (date > getFrom() && date < getTo()) ? true : false;
     }
 
     return {
