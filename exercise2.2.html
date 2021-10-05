@@ -11,9 +11,9 @@
 </head>
 
 <body>
-    <button id='horsensButton' onclick="xmlHTTPLatestMeasurements('Horsens');">Horsens</button>
-    <button id='aarhusButton' onclick="xmlHTTPLatestMeasurements('Aarhus');">Aarhus</button>
-    <button id='copenhagenButton' onclick="xmlHTTPLatestMeasurements('Copenhagen');">Copenhagen</button>
+    <button id='horsensButton' onclick="getData('Horsens');">Horsens</button>
+    <button id='aarhusButton' onclick="getData('Aarhus');">Aarhus</button>
+    <button id='copenhagenButton' onclick="getData('Copenhagen');">Copenhagen</button>
 
     <table class="minimalistBlack">
         <thead>
@@ -30,6 +30,20 @@
                 <td id="latestPrecipitation"></td>
                 <td id="latestWind"></td>
                 <td id="latestCloudCoverage"></td>
+            </tr>
+        </tbody>
+        </tr>
+    </table>
+
+    <table class="minimalistBlack">
+        <thead>
+            <tr>
+                <th>Minimum temperature for last 5 days</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="minimumTemperature"></td>
             </tr>
         </tbody>
         </tr>

@@ -1,43 +1,93 @@
-let latestMeasurementTemperature = [] 
-let latestMeasurementPrecipitation = []
-let latestMeasurementWind = []
-let latestMeasurementCloud = []
+let temperatures = []
+let precipitations = []
+let winds = []
+let clouds = []
 
-function xmlHTTPLatestMeasurements(location) {
-    latestMeasurementTemperature = []
-    latestMeasurementPrecipitation = []
-    latestMeasurementWind = []
-    latestMeasurementCloud = []
+function success(responseText) {
+    temperatures = []
+	precipitations = []
+	winds = []
+	clouds = []
+    response = JSON.parse(responseText)
 
-    let request = new XMLHttpRequest()
-    request.open('GET', 'http://localhost:8080/data/' + location)
-    console.log(request)
-    request.send()
-    request.onload = () => {
-            let response = JSON.parse(request.responseText)
-            response.forEach(element => {
-                if (element.type === "temperature") {
-                    latestMeasurementTemperature.push(element)
-                }
-                else if (element.type === "precipitation") {
-                    latestMeasurementPrecipitation.push(element)
-                }
-                else if (element.type === "wind speed") {
-                    latestMeasurementWind.push(element)
-                }
-                else if (element.type === "cloud coverage") {
-                    latestMeasurementCloud.push(element)
-                }
-            });
-
-            $('#latestTemperature').text(latestMeasurementTemperature[latestMeasurementTemperature.length-1].value + '° ' + latestMeasurementTemperature[latestMeasurementTemperature.length-1].unit)
-            $('#latestPrecipitation').text(latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].value + ' ' + latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].unit + '\n' + latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].precipitation_type)
-            $('#latestWind').text(latestMeasurementWind[latestMeasurementWind.length-1].value + ' ' + latestMeasurementWind[latestMeasurementWind.length-1].unit + '\n' + latestMeasurementWind[latestMeasurementWind.length-1].direction)
-            $('#latestCloudCoverage').text(latestMeasurementCloud[latestMeasurementCloud.length-1].value + ' ' + latestMeasurementCloud[latestMeasurementCloud.length-1].unit)
-
-        }    
+    response.forEach((element) => {
+        if (element.type === "temperature") {
+            temperatures.push(element)
+        } else if (element.type === "precipitation") {
+            precipitations.push(element)
+        } else if (element.type === "wind speed") {
+            winds.push(element)
+        } else if (element.type === "cloud coverage") {
+            clouds.push(element)
+        }
+    })
+    xmlHTTPLatestMeasurements()
+    xmlHTTP5DayMinimumTemperature()
 }
 
-xmlHTTPLatestMeasurements('Horsens')
+function getData(location) {
 
-// document.getElementById('latestTemperature') = temperatures[0]
+    let request = new XMLHttpRequest()
+	request.open("GET", "http://localhost:8080/data/" + location)
+	console.log(request)
+	request.send()
+
+    request.onload = function () {
+        success(this.responseText)
+    }
+}
+
+function xmlHTTPLatestMeasurements() {
+        
+		$("#latestTemperature").text(
+			temperatures[temperatures.length - 1].value +
+				"° " +
+				temperatures[temperatures.length - 1].unit
+		)
+		$("#latestPrecipitation").text(
+			precipitations[precipitations.length - 1].value +
+				" " +
+				precipitations[precipitations.length - 1].unit +
+				"\n" +
+				precipitations[precipitations.length - 1].precipitation_type
+		)
+		$("#latestWind").text(
+			winds[winds.length - 1].value +
+				" " +
+				winds[winds.length - 1].unit +
+				"\n" +
+				winds[winds.length - 1].direction
+		)
+		$("#latestCloudCoverage").text(
+			clouds[clouds.length - 1].value + " " + clouds[clouds.length - 1].unit
+		)
+}
+
+function getDaysAgo(b) {
+	var a = new Date()
+	a.setDate(a.getDate() - b)
+	return a
+}
+
+function xmlHTTP5DayMinimumTemperature() {
+	let minimumTemperature = {
+        value: 200,
+        unit: ''
+    }
+	let date5daysAgo = getDaysAgo(5)
+
+	let last5daysTemperatures = temperatures.filter(
+		(temperature) => new Date(temperature.time) >= date5daysAgo
+	)
+
+    for (let index = 0; index < last5daysTemperatures.length; index++) {
+        if (minimumTemperature.value > last5daysTemperatures[index].value) {
+            minimumTemperature.value = last5daysTemperatures[index].value
+            minimumTemperature.unit = last5daysTemperatures[index].unit
+        }
+    }
+
+    $("#minimumTemperature").text(
+        minimumTemperature.value + '° ' + minimumTemperature.unit
+    )
+}
