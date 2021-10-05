@@ -25,6 +25,7 @@ function success(responseText) {
     xmlHTTPLatestMeasurements()
     xmlHTTP5DayMinimumTemperature()
     xmlHTTP5DayMaximumTemperature()
+    xmlHTTP5DayTotalPrecipitation()
 }
 
 
@@ -119,5 +120,29 @@ function xmlHTTP5DayMaximumTemperature() {
 
     $("#maximumTemperature").text(
         maximumTemperature.value + '° ' + maximumTemperature.unit
+    )
+}
+
+
+function xmlHTTP5DayTotalPrecipitation() {
+    let totalPrecipitation = {
+        value: 0,
+        unit: ''
+    }
+
+    let date5daysAgo = getDaysAgo(5)
+
+	let last5daysPrecipitation = precipitations.filter(
+		(precipitation) => new Date(precipitation.time) >= date5daysAgo
+	)
+
+    for (let index = 0; index < last5daysPrecipitation.length; index++) {
+            totalPrecipitation.value += last5daysPrecipitation[index].value
+            totalPrecipitation.unit = last5daysPrecipitation[index].unit
+    }
+    totalPrecipitation.value = Math.round(totalPrecipitation.value)
+
+    $("#totalPrecipitation").text(
+        totalPrecipitation.value + ' ' + totalPrecipitation.unit
     )
 }
