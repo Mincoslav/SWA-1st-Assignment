@@ -2,7 +2,7 @@ let latestMeasurementTemperature = []
 let latestMeasurementPrecipitation = []
 let latestMeasurementWind = []
 let latestMeasurementCloud = []
-    
+
 function xmlHTTPLatestMeasurements(location) {
     latestMeasurementTemperature = []
     latestMeasurementPrecipitation = []
@@ -31,7 +31,7 @@ function xmlHTTPLatestMeasurements(location) {
             });
 
             $('#latestTemperature').text(latestMeasurementTemperature[latestMeasurementTemperature.length-1].value + '° ' + latestMeasurementTemperature[latestMeasurementTemperature.length-1].unit)
-            $('#latestPrecipitation').text(latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].value + ' ' + latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].unit + '\n' + latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].type)
+            $('#latestPrecipitation').text(latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].value + ' ' + latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].unit + '\n' + latestMeasurementPrecipitation[latestMeasurementPrecipitation.length-1].precipitation_type)
             $('#latestWind').text(latestMeasurementWind[latestMeasurementWind.length-1].value + ' ' + latestMeasurementWind[latestMeasurementWind.length-1].unit + '\n' + latestMeasurementWind[latestMeasurementWind.length-1].direction)
             $('#latestCloudCoverage').text(latestMeasurementCloud[latestMeasurementCloud.length-1].value + ' ' + latestMeasurementCloud[latestMeasurementCloud.length-1].unit)
 
