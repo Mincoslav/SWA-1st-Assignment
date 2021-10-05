@@ -26,6 +26,7 @@ function success(responseText) {
     xmlHTTP5DayMinimumTemperature()
     xmlHTTP5DayMaximumTemperature()
     xmlHTTP5DayTotalPrecipitation()
+    xmlHTTP5DayAverageWindSpeed()
 }
 
 
@@ -144,5 +145,29 @@ function xmlHTTP5DayTotalPrecipitation() {
 
     $("#totalPrecipitation").text(
         totalPrecipitation.value + ' ' + totalPrecipitation.unit
+    )
+}
+
+
+function xmlHTTP5DayAverageWindSpeed() {
+    let windSpeeds = {
+        values: [],
+        unit: ''
+    }
+
+    let date5daysAgo = getDaysAgo(5)
+
+	let last5daysAverageWindSpeed = winds.filter(
+		(wind) => new Date(wind.time) >= date5daysAgo
+	)
+
+    for (let index = 0; index < last5daysAverageWindSpeed.length; index++) {
+        windSpeeds.values.push(last5daysAverageWindSpeed[index].value)
+        windSpeeds.unit = last5daysAverageWindSpeed[index].unit
+    }
+    averageWindSpeed = Math.round(windSpeeds.values.reduce((a, b) => a + b, 0) / windSpeeds.values.length)
+
+    $("#averageWindSpeed").text(
+        averageWindSpeed + ' ' + windSpeeds.unit
     )
 }
