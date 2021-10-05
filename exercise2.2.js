@@ -3,6 +3,7 @@ let precipitations = []
 let winds = []
 let clouds = []
 
+
 function success(responseText) {
     temperatures = []
 	precipitations = []
@@ -25,6 +26,7 @@ function success(responseText) {
     xmlHTTP5DayMinimumTemperature()
 }
 
+
 function getData(location) {
 
     let request = new XMLHttpRequest()
@@ -36,6 +38,14 @@ function getData(location) {
         success(this.responseText)
     }
 }
+
+
+function getDaysAgo(b) {
+	var a = new Date()
+	a.setDate(a.getDate() - b)
+	return a
+}
+
 
 function xmlHTTPLatestMeasurements() {
         
@@ -63,11 +73,6 @@ function xmlHTTPLatestMeasurements() {
 		)
 }
 
-function getDaysAgo(b) {
-	var a = new Date()
-	a.setDate(a.getDate() - b)
-	return a
-}
 
 function xmlHTTP5DayMinimumTemperature() {
 	let minimumTemperature = {
