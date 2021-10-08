@@ -2,11 +2,11 @@
 function Event(state) {
 
     function getTime() {
-        return state.time;
+        return time(state);
     }
 
     function getPlace() {
-        return state.place;
+        return place(state);
     }
 
     return {
@@ -19,11 +19,11 @@ function Event(state) {
 function DataType(state) {
 
     function getType() {
-        return state.type;
+        return type(state);
     }
 
     function getUnit() {
-        return state.unit;
+        return unit(state);
     }
 
     return {
@@ -35,49 +35,131 @@ function DataType(state) {
 // DATE INTERVAL
 function DateInterval(state) {
 
-    function getFrom() {
-        return state.from
+    function from() {
+        return from(state);
     }
 
-    function getTo() {
-        return state.to
+    function to() {
+        return to(state);
     }
 
     function contains(date) {
-        // if(date>getFrom() && date<getTo()) {
-        //     return true
-        // }
-        // else {
-        //     return false
-        // }
-
-        return (date > getFrom() && date < getTo()) ? true : false;
+        return (date > from() && date < to())
     }
 
     return {
-        getFrom,
-        getTo,
+        from,
+        to,
         contains
     }
 }
 
-//WEATHER DATA
+// WEATHER DATA
 function WeatherData(state) {
 
-    const event = eventNature(state)
-    const type = dataType(state)
+    const Event = eventNature(state)
+    const Type = dataType(state)
 
-    function getValue() {
-        return state.value
+    function value() {
+        return value(state);
     }
 
     return {
-        ...event, ...type, getValue
+        ...event, ...type, value
     }
 }
 
 // WEATHER HISTORY
+function WeatherHistory(data) {
 
+    let placeFilter = ''
+    let typeFilter = ''
+    let periodFilter = ''
+
+    let newData;
+
+    // Contains WeatherData objects
+    // let weatherData = data => [];
+
+    // const filteredData = []
+
+    function forPlace(place) {
+        let newPlaceFilter = placeFilter.filter(place);
+        return newPlaceFilter;
+    }
+
+    function forType(type) {
+        let newTypeFilter = typeFilter.filter(type);
+        return newTypeFilter;
+    }
+
+    function forPeriod(period) {
+        let newPeriodFilter = periodFilter.filter(period);
+        return newPeriodFilter;
+    }
+
+    //returning weather history with both existing and new data
+    function including(data) {
+        let fullWeatherHistory = data.map(newData);
+        return fullWeatherHistory;
+    }
+
+    function convertToUSUnits() {
+
+        const conversionToUsUnits = data.forEach(dataPoint =>
+            (dataPoint.getType() === 'Wind') ? dataPoint.convertToMPH()
+            : (dataPoint.getType() === 'Temperature') ? dataPoint.convertToF()
+            : (dataPoint.getType() === 'Precipitation') ? dataPoint.convertToInches()
+            : conversionToUsUnits)
+
+        // data.forEach(dataPoint => {
+        //     if(dataPoint.getType() === 'Wind') {
+        //         dataPoint.convertToMPH()
+        //     }
+        //     else if(dataPoint.getType() === 'Temperature') {
+        //         dataPoint.convertToF()
+        //     }
+        //     else if(dataPoint.getType() === 'Precipitation') {
+        //         dataPoint.convertToInches()
+        //     }
+        // })
+    }
+
+    function convertToInternationalUnits() {
+
+        const conversionToInternUnits = data.forEach(dataPoint =>
+            (dataPoint.getType() === 'Wind') ? dataPoint.convertToMperS()
+            : (dataPoint.getType() === 'Temperature') ? dataPoint.convertToC()
+            : (dataPoint.getType() === 'Precipitation') ? dataPoint.convertToMM()
+            : conversionToInternUnits)
+
+        // data.forEach((dataPoint) => {
+        //     if(dataPoint.getType() === 'Wind') {
+        //         dataPoint.convertToMperS()
+        //     }
+        //     else if(dataPoint.getType() === 'Temperature') {
+        //         dataPoint.convertToC()
+        //     }
+        //     else if(dataPoint.getType() === 'Precipitation') {
+        //         dataPoint.convertToMM()
+        //     }
+        // })
+    }
+
+    function getData() {
+        return data
+    }
+
+    return {
+        forPlace,
+        forType,
+        forPeriod,
+        including,
+        convertToInternationalUnits,
+        convertToUSUnits,
+        getData
+    }
+}
 
 // TEMPERATURE CLASS
 function Temperature (time, place, type, unit, value) {
@@ -86,28 +168,28 @@ function Temperature (time, place, type, unit, value) {
     const weatherDataState = WeatherData(state)
 
     function convertToC() {
-        if (state.unit === 'F') {
-            return new Temperature(this.time, this.place, this.type, 'C', (state.value - 32) / 1.8);
-        }
+        const temperatureInC = Temperature => (state.unit === 'F')
+            ? ((state.value - 32) / 1.8)
+            : temperatureInC
+
+        return temperatureInC;
+        // if (state.unit === 'F') {
+        //     return new Temperature(this.time, this.place, this.type, 'C', (state.value - 32) / 1.8);
+        // }
     }
 
     function convertToF() {
+        const temperatureInF = Temperature => (state.unit === 'C')
+            ? state.value * 1.8 + 32
+            : temperatureInF()
+
         if (state.unit === 'C') {
             return new Temperature(this.time, this.place, this.type, 'F', state.value * 1.8 + 32);
         }
     }
 
-    function toString() { return state }
-
-    return { convertToC, convertToF, toString }
+    return { convertToC, convertToF }
 }
-
-//Testing temperature
-let temperature1 = Temperature('C', 21)
-console.log(temperature1.toString())
-
-temperature1 = temperature1.convertToF()
-console.log(temperature1.toString())
 
 // PRECIPITATION
 function Precipitation(time, place, type, unit, value) {
