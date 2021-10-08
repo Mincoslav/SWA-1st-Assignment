@@ -3,6 +3,29 @@ let precipitations = [];
 let winds = [];
 let clouds = [];
 
+function dateInterval(fromDate, toDate) {
+	function getFrom() {
+		return fromDate;
+	}
+	function getTo() {
+		return toDate;
+	}
+
+	function contains(date) {
+		if (date > getFrom() && date < getTo()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	return {
+		getFrom,
+		getTo,
+		contains
+	};
+}
+
 function success(responseText) {
 	temperatures = [];
 	precipitations = [];
@@ -21,6 +44,7 @@ function success(responseText) {
 			clouds.push(element);
 		}
 	});
+
 	let last5daysTemperatures = [
 		getDayValues(getDaysAgo(5), temperatures),
 		getDayValues(getDaysAgo(4), temperatures),
@@ -42,27 +66,40 @@ function success(responseText) {
 		getDayValues(getDaysAgo(2), precipitations),
 		getDayValues(getDaysAgo(1), precipitations)
 	];
-	// let last5daysClouds = [
-	// 	getDayValues(getDaysAgo(5), clouds),
-	// 	getDayValues(getDaysAgo(4), clouds),
-	// 	getDayValues(getDaysAgo(3), clouds),
-	// 	getDayValues(getDaysAgo(2), clouds),
-	// 	getDayValues(getDaysAgo(1), clouds),
-	// ]
-	setLast5Dates(last5daysTemperatures);
-	xmlHTTPLatestMeasurements();
-	xmlHTTP5DayMinimumTemperature(last5daysTemperatures);
-	xmlHTTP5DayMaximumTemperature(last5daysTemperatures);
-	xmlHTTP5DayTotalPrecipitation(last5daysPrecipitation);
-	xmlHTTP5DayAverageWindSpeed(last5daysWind);
+
+	let predictions = {
+		temperaturePredictions: getDayValues(
+			"",
+			temperatures,
+			new Date(),
+			getDaysAgo(-1)
+		),
+		cloudPredictions: getDayValues("", clouds, new Date(), getDaysAgo(-1)),
+		windPredictions: getDayValues("", winds, new Date(), getDaysAgo(-1)),
+		rainPredictions: getDayValues(
+			"",
+			precipitations,
+			new Date(),
+			getDaysAgo(-1)
+		)
+	};
+
+	if (!response[0].hasOwnProperty("from")) {
+		setLast5Dates(last5daysTemperatures);
+		xmlHTTPLatestMeasurements();
+		xmlHTTP5DayMinimumTemperature(last5daysTemperatures);
+		xmlHTTP5DayMaximumTemperature(last5daysTemperatures);
+		xmlHTTP5DayTotalPrecipitation(last5daysPrecipitation);
+		xmlHTTP5DayAverageWindSpeed(last5daysWind);
+	} else {
+		xmlHTTP24HourPredictions(predictions);
+	}
 }
 
-function getData(location) {
+function getData(url) {
 	let request = new XMLHttpRequest();
-	request.open("GET", "http://localhost:8080/data/" + location);
-	// console.log(request);
+	request.open("GET", url);
 	request.send();
-
 	request.onload = function () {
 		success(this.responseText);
 	};
@@ -80,19 +117,28 @@ function withoutTime(dateTime) {
 	return date;
 }
 
-function getDayValues(date, array) {
+function getDayValues(date, array, fromDate, toDate) {
 	const newArray = [];
-	for (let index = 0; index < array.length; index++) {
-		array[index].time = new Date(array[index].time);
-		if (
-			array[index].time.getDate() === date.getDate() &&
-			array[index].time.getMonth() === date.getMonth() &&
-			array[index].time.getFullYear() === date.getFullYear()
-		) {
-			newArray.push(array[index]);
+	if (fromDate !== undefined && toDate !== undefined) {
+		let interval = dateInterval(fromDate, toDate);
+		for (let index = 0; index < array.length; index++) {
+			array[index].time = new Date(array[index].time);
+			if (interval.contains(array[index].time)) {
+				newArray.push(array[index]);
+			}
+		}
+	} else {
+		for (let index = 0; index < array.length; index++) {
+			array[index].time = new Date(array[index].time);
+			if (
+				array[index].time.getDate() === date.getDate() &&
+				array[index].time.getMonth() === date.getMonth() &&
+				array[index].time.getFullYear() === date.getFullYear()
+			) {
+				newArray.push(array[index]);
+			}
 		}
 	}
-
 	return newArray;
 }
 
@@ -185,7 +231,7 @@ function xmlHTTP5DayTotalPrecipitation(list) {
 	for (let index = 0; index < list.length; index++) {
 		for (let innerIndex = 0; innerIndex < list[index].length; innerIndex++) {
 			totalPrecipitation.value += list[index][innerIndex].value;
-			totalPrecipitation.total += list[index][innerIndex].value
+			totalPrecipitation.total += list[index][innerIndex].value;
 			totalPrecipitation.unit = list[index][innerIndex].unit;
 		}
 
@@ -194,7 +240,7 @@ function xmlHTTP5DayTotalPrecipitation(list) {
 		$("#totalPrecipitationValue" + index).text(
 			totalPrecipitation.value + " " + totalPrecipitation.unit
 		);
-		totalPrecipitation.value = 0
+		totalPrecipitation.value = 0;
 	}
 
 	$("#totalPrecipitation").text(
@@ -224,4 +270,40 @@ function xmlHTTP5DayAverageWindSpeed(list) {
 	}
 
 	$("#averageWindSpeed").text(averageWindSpeed + " " + windSpeeds.unit);
+}
+
+function xmlHTTP24HourPredictions(list) {
+	let dateRow = document.querySelectorAll("#dateRow > th");
+	let temperatureRow = document.querySelectorAll("#temperatureRow > td");
+	let precipitationRow = document.querySelectorAll("#precipitationRow > td");
+	let windRow = document.querySelectorAll("#windRow > td");
+	let cloudRow = document.querySelectorAll("#cloudRow > td");
+
+	for (let index = 1; index < dateRow.length; index++) {
+		dateRow[index].innerHTML = list.temperaturePredictions[index - 1].time;
+		temperatureRow[index].innerHTML =
+			list.temperaturePredictions[index - 1].from +
+			" - " +
+			list.temperaturePredictions[index - 1].to +
+			"° " +
+			list.temperaturePredictions[index - 1].unit;
+		precipitationRow[index].innerHTML =
+			list.rainPredictions[index - 1].from +
+			" - " +
+			list.rainPredictions[index - 1].to +
+			" " +
+			list.rainPredictions[index - 1].unit;
+		windRow[index].innerHTML =
+			list.windPredictions[index - 1].to +
+			" - " +
+			list.windPredictions[index - 1].to +
+			" " +
+			list.windPredictions[index - 1].unit;
+		cloudRow[index].innerHTML =
+			list.cloudPredictions[index - 1].to +
+			" - " +
+			list.cloudPredictions[index - 1].to +
+			" " +
+			list.cloudPredictions[index - 1].unit;
+	}
 }

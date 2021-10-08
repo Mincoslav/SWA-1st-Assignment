@@ -7,13 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="exercise2.2.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>Document</title>
+    <title>Weather Stuff</title>
 </head>
 
 <body>
-    <button id='horsensButton' onclick="getData('Horsens');">Horsens</button>
-    <button id='aarhusButton' onclick="getData('Aarhus');">Aarhus</button>
-    <button id='copenhagenButton' onclick="getData('Copenhagen');">Copenhagen</button>
+    <button id='horsensButton'
+        onclick="{getData('http://localhost:8080/data/Horsens'); getData('http://localhost:8080/forecast/Horsens')}">Horsens</button>
+    <button id='aarhusButton' onclick="{getData('http://localhost:8080/data/Aarhus'); getData('http://localhost:8080/forecast/Aarhus')}">Aarhus</button>
+    <button id='copenhagenButton' onclick="{getData('http://localhost:8080/data/Copenhagen'); getData('http://localhost:8080/forecast/Copenhagen')}">Copenhagen</button>
 
     <table class="minimalistBlack">
         <thead>
@@ -107,6 +108,155 @@
         </tbody>
         </tr>
     </table>
+
+    <table class="minimalistBlack">
+        <thead>
+            <tr id="dateRow">
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr id='temperatureRow'>
+                <td>Temperature</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <tr id='precipitationRow'>
+                <td>Precipitation</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <tr id='windRow'>
+                <td>Wind</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <tr id='cloudRow'>
+                <td>Cloud Coverage</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+        </tbody>
+        </tr>
+    </table>
+
 </body>
 
 <script src="exercise2.2.js"></script>
