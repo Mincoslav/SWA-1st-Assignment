@@ -31,9 +31,8 @@ function success(responseText) {
 	precipitations = [];
 	winds = [];
 	clouds = [];
-	response = JSON.parse(responseText);
 
-	response.forEach((element) => {
+	responseText.forEach((element) => {
 		if (element.type === "temperature") {
 			temperatures.push(element);
 		} else if (element.type === "precipitation") {
@@ -84,25 +83,31 @@ function success(responseText) {
 		)
 	};
 
-	if (!response[0].hasOwnProperty("from")) {
+	if (!responseText[0].hasOwnProperty("from")) {
 		setLast5Dates(last5daysTemperatures);
-		xmlHTTPLatestMeasurements();
-		xmlHTTP5DayMinimumTemperature(last5daysTemperatures);
-		xmlHTTP5DayMaximumTemperature(last5daysTemperatures);
-		xmlHTTP5DayTotalPrecipitation(last5daysPrecipitation);
-		xmlHTTP5DayAverageWindSpeed(last5daysWind);
+		latestMeasurements();
+		minimumTemperature5Days(last5daysTemperatures);
+		maximumTemperature5Days(last5daysTemperatures);
+		totalPrecipitation5Days(last5daysPrecipitation);
+		averageWindSpeed5Days(last5daysWind);
 	} else {
-		xmlHTTP24HourPredictions(predictions);
+		predictionsForNext24Hours(predictions);
 	}
 }
 
 function getData(url) {
+	//EXERCISE 2.2 a) - using xmlHTTPRequest
 	let request = new XMLHttpRequest();
 	request.open("GET", url);
 	request.send();
 	request.onload = function () {
-		success(this.responseText);
+		success(JSON.parse(this.responseText));
 	};
+
+	// // EXERCISE 2.2 b) - using fetch & promises
+	// fetch(url)
+	// .then(res => res.json())
+	// .then(data => success(data))
 }
 
 function getDaysAgo(b) {
@@ -148,7 +153,7 @@ function setLast5Dates(list) {
 	}
 }
 
-function xmlHTTPLatestMeasurements() {
+function latestMeasurements() {
 	$("#latestTemperature").text(
 		temperatures[temperatures.length - 1].value +
 			"° " +
@@ -173,7 +178,7 @@ function xmlHTTPLatestMeasurements() {
 	);
 }
 
-function xmlHTTP5DayMinimumTemperature(list) {
+function minimumTemperature5Days(list) {
 	let minimumTemperature = {
 		value: 200,
 		unit: ""
@@ -197,7 +202,7 @@ function xmlHTTP5DayMinimumTemperature(list) {
 	);
 }
 
-function xmlHTTP5DayMaximumTemperature(list) {
+function maximumTemperature5Days(list) {
 	let maximumTemperature = {
 		value: -100,
 		unit: ""
@@ -221,7 +226,7 @@ function xmlHTTP5DayMaximumTemperature(list) {
 	);
 }
 
-function xmlHTTP5DayTotalPrecipitation(list) {
+function totalPrecipitation5Days(list) {
 	let totalPrecipitation = {
 		value: 0,
 		unit: "",
@@ -248,7 +253,7 @@ function xmlHTTP5DayTotalPrecipitation(list) {
 	);
 }
 
-function xmlHTTP5DayAverageWindSpeed(list) {
+function averageWindSpeed5Days(list) {
 	let windSpeeds = {
 		values: [],
 		unit: ""
@@ -272,7 +277,7 @@ function xmlHTTP5DayAverageWindSpeed(list) {
 	$("#averageWindSpeed").text(averageWindSpeed + " " + windSpeeds.unit);
 }
 
-function xmlHTTP24HourPredictions(list) {
+function predictionsForNext24Hours(list) {
 	let dateRow = document.querySelectorAll("#dateRow > th");
 	let temperatureRow = document.querySelectorAll("#temperatureRow > td");
 	let precipitationRow = document.querySelectorAll("#precipitationRow > td");
