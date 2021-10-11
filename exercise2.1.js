@@ -1,5 +1,5 @@
 //EVENT
-function Event() {
+function EventData() {
 
     function getTime() {
         return state.time;
@@ -46,7 +46,7 @@ function DateInterval(state) {
     function contains(date) {
         return (date > from() && date < to())
     }
-
+  
     return {
         from,
         to,
@@ -57,7 +57,7 @@ function DateInterval(state) {
 // WEATHER DATA
 function WeatherData(state) {
 
-    const event = Event(state)
+    const event = EventData(state)
     const type = DataType(state)
 
     function value() {
@@ -82,14 +82,14 @@ function WeatherData(state) {
 // WEATHER HISTORY
 function WeatherHistory(data) {
 
-    let placeFilter = ''
-    let typeFilter = ''
-    let periodFilter = ''
+    //let placeFilter = ''
+    //let typeFilter = ''
+    //let periodFilter = ''
 
     // Contains WeatherData objects
     let weatherData = data => [];
 
-    const filteredData = []
+    //const filteredData = []
 
     function forPlace(place) {
         let newPlaceFilter = data.filter(place);
@@ -97,18 +97,19 @@ function WeatherHistory(data) {
     }
 
     function forType(type) {
-        let newTypeFilter = data.filter(type => typeFilter);
+        let newTypeFilter = data.filter(type);
         return newTypeFilter;
     }
 
     function forPeriod(period) {
-        let newPeriodFilter = data.filter(period => periodFilter);
+        let newPeriodFilter = data.filter(period);
         return newPeriodFilter;
     }
 
     //returning weather history with both existing and new data
     function including(newData) {
-        data = data.concat(newData);
+       let  updatedData = new WeatherHistory(weatherData)
+       updatedData = updatedData.concat(newData) 
 
         // let newWeatherData = weatherData.push(newData);
         // return newWeatherData;
@@ -157,7 +158,7 @@ function WeatherHistory(data) {
     }
 
     function getData() {
-        return data
+        return weatherData
     }
 
     return {
@@ -237,7 +238,7 @@ function Temperature (time, place, type, unit, value) {
         return state
     }
 
-    return { convertToC, convertToF, toString }
+    return {...weatherDataState, convertToC, convertToF, toString }
 }
 
 // TEMPERATURE TESTER
@@ -355,7 +356,9 @@ function CloudCoverage(time, place, type, unit, value) {
     }
 
     return {
-        ...weatherDataState, getSkyStatus, toString
+        ...weatherDataState,
+        getSkyStatus,
+        toString
     }
 }
 
@@ -394,9 +397,9 @@ function WeatherPrediction(state) {
 
 // WEATHER FORECAST
 function WeatherForecast() {
-    let placeFilter = ''
-    let typeFilter = ''
-    let periodFilter = ''
+    //let placeFilter = ''
+    //let typeFilter = ''
+    //let periodFilter = ''
 
     //Contains WeatherPrediction objects
     let data = []
@@ -446,10 +449,19 @@ function WeatherForecast() {
 
     function averageFromValue(average) {
         //return average.reduce((temp1, temp2) => (temp1 + temp2)) / average.length;
+        for (let i = 0; i < data.length; i++) {
+            newData = []
+            newData.push(data[i].from) 
+          }
+          return average(newData)
     }
 
     function averageToValue() {
-
+        for (let i = 0; i < data.length; i++)
+            newData = []
+            newData.push(data[i].to) 
+          }
+          return average(newData)
     }
 
     function getData() {
