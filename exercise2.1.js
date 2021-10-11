@@ -479,7 +479,7 @@ function WeatherForecast() {
         averageToValue,
         getData
     }
-}
+
 
 
 // TEMPERATURE PREDICTION
