@@ -1,12 +1,12 @@
 //EVENT
-function Event(state) {
+function Event() {
 
     function getTime() {
-        return time(state);
+        return state.time;
     }
 
     function getPlace() {
-        return place(state);
+        return state.place;
     }
 
     return {
@@ -16,14 +16,14 @@ function Event(state) {
 }
 
 //DATA TYPE
-function DataType(state) {
+function DataType() {
 
     function getType() {
-        return type(state);
+        return state.type;
     }
 
     function getUnit() {
-        return unit(state);
+        return state.unit;
     }
 
     return {
@@ -36,11 +36,11 @@ function DataType(state) {
 function DateInterval(state) {
 
     function from() {
-        return from(state);
+        return state.from;
     }
 
     function to() {
-        return to(state);
+        return state.to;
     }
 
     function contains(date) {
@@ -57,17 +57,27 @@ function DateInterval(state) {
 // WEATHER DATA
 function WeatherData(state) {
 
-    const Event = eventNature(state)
-    const Type = dataType(state)
+    const event = Event(state)
+    const type = DataType(state)
 
     function value() {
-        return value(state);
+        return state.value;
     }
 
     return {
         ...event, ...type, value
     }
 }
+
+// TESTING
+// const state = {
+//     time: Date(),
+//     place: 'Horsens',
+//     value: '123'
+// }
+// const data = WeatherData(state)
+// console.log(data.value())
+// END OF TESTING
 
 // WEATHER HISTORY
 function WeatherHistory(data) {
@@ -76,32 +86,32 @@ function WeatherHistory(data) {
     let typeFilter = ''
     let periodFilter = ''
 
-    let newData;
-
     // Contains WeatherData objects
-    // let weatherData = data => [];
+    let weatherData = data => [];
 
-    // const filteredData = []
+    const filteredData = []
 
     function forPlace(place) {
-        let newPlaceFilter = placeFilter.filter(place);
+        let newPlaceFilter = data.filter(place);
         return newPlaceFilter;
     }
 
     function forType(type) {
-        let newTypeFilter = typeFilter.filter(type);
+        let newTypeFilter = data.filter(type => typeFilter);
         return newTypeFilter;
     }
 
     function forPeriod(period) {
-        let newPeriodFilter = periodFilter.filter(period);
+        let newPeriodFilter = data.filter(period => periodFilter);
         return newPeriodFilter;
     }
 
     //returning weather history with both existing and new data
-    function including(data) {
-        let fullWeatherHistory = data.map(newData);
-        return fullWeatherHistory;
+    function including(newData) {
+        data = data.concat(newData);
+
+        // let newWeatherData = weatherData.push(newData);
+        // return newWeatherData;
     }
 
     function convertToUSUnits() {
@@ -161,6 +171,46 @@ function WeatherHistory(data) {
     }
 }
 
+//WEATHER HISTORY TESTING
+//const fromTester = new Date('December 17, 1995 03:24:00')
+//const toTester = new Date('December 17, 2021 05:00:00')
+
+//const interval = DateInterval(fromTester, toTester)
+
+//const currentTime = new Date('September 17, 2000 15:35:00')
+
+//const data1 = Wind('West', currentTime, 'Horsens', 'Wind', 'M/S',  3)
+//const data2 = Wind('East', currentTime, 'Aarhus', 'Wind', 'MPH', 15)
+
+// let data3 = Temperature(Date, 'Horsens', 'Temperature', 'C', 30)
+// data3 = data3.convertToUSUnits()
+// console.log(data3.toString())
+//const data4 = Temperature(currentTime, 'Aarhus', 'Temperature', 'F', 69)
+
+
+//const data5 = Precipitation('Rain', currentTime, 'Horsens', 'Precipitation', 'MM', 30)
+//const data6 = Precipitation('Light Rain', currentTime, 'Aarhus', 'Precipitation', 'Inch', 3)
+
+//let dataList = [data1, data2, data3, data4, data5, data6]
+//console.log(dataList)
+
+//const history = WeatherHistory()
+// history.setPlaceFilter('Horsens')
+// history.setTypeFilter('Temperature')
+//history.forPeriod(interval)
+// console.log(history)
+//history.including(dataList)
+
+// console.log(history.getFilteredData())
+//list = history.getFilteredData()
+
+
+// const previousTime = new Date('September 17, 2000 15:35:00')
+// const currentTime = new Date();
+// const newData = including(currentTime);
+// console.log(newData)
+//END OF WEATHER HISTORY TESTING
+
 // TEMPERATURE CLASS
 function Temperature (time, place, type, unit, value) {
 
@@ -168,28 +218,33 @@ function Temperature (time, place, type, unit, value) {
     const weatherDataState = WeatherData(state)
 
     function convertToC() {
-        const temperatureInC = Temperature => (state.unit === 'F')
-            ? ((state.value - 32) / 1.8)
-            : temperatureInC
+        const temperatureInC = (state.unit === 'F')
+            ? new Temperature(state.time, state.place, state.type, 'C', (state.value - 32) / 1.8)
+            : state.value
 
         return temperatureInC;
-        // if (state.unit === 'F') {
-        //     return new Temperature(this.time, this.place, this.type, 'C', (state.value - 32) / 1.8);
-        // }
     }
 
     function convertToF() {
-        const temperatureInF = Temperature => (state.unit === 'C')
-            ? state.value * 1.8 + 32
-            : temperatureInF()
+        const temperatureInF = (state.unit === 'C')
+            ? new Temperature(state.time, state.place, state.type, 'F', state.value * 1.8 + 32)
+            : state.value
 
-        if (state.unit === 'C') {
-            return new Temperature(this.time, this.place, this.type, 'F', state.value * 1.8 + 32);
-        }
+        return temperatureInF;
     }
 
-    return { convertToC, convertToF }
+    function toString() {
+        return state
+    }
+
+    return { convertToC, convertToF, toString }
 }
+
+// TEMPERATURE TESTER
+// let data = Temperature(Date(), 'Horsens', 'Temperature', 'C', '23' )
+// data = data.convertToF()
+// console.log(data.toString())
+// END OF TEMPERATURE TESTING
 
 // PRECIPITATION
 function Precipitation(time, place, type, unit, value) {
@@ -202,49 +257,19 @@ function Precipitation(time, place, type, unit, value) {
     }
 
     function convertToInches() {
-        if(state.unit === 'MM') {
-            state.unit = 'Inch'
-            state.value = state.value / 25.4;
-        }
+        const conversionToInches = (state.unit === 'MM')
+            ? new Precipitation(state.time, state.place, state.type, 'Inch', state.value / 25.4)
+            : state.value
+
+        return conversionToInches;
     }
 
     function convertToMM() {
-        if(state.unit === 'Inch') {
-            state.unit = 'MM';
-            state.value = state.value * 25.4;
-        }
-    }
+        const conversionToMm = (state.unit === 'Inch')
+            ? new Precipitation(state.time, state.place, state.type, 'MM', state.value * 25.4)
+            : state.value
 
-    return {
-        ...weatherDataState,
-        precipitationType,
-        convertToInches,
-        convertToMM
-    }
-}
-
-// WIND
-function Wind (direction, time, place, type, unit, value) {
-
-    const state = { direction, time, place, type, unit, value }
-    const weatherDataState = WeatherData(state)
-
-    function direction() {
-        return state.direction
-    }
-
-    function convertToMPH() {
-        if (state.unit === 'M/S') {
-            state.unit = 'MPH'
-            state.value = state.value * 2.237
-        }
-    }
-
-    function convertToMperS() {
-        if (state.unit === 'MPH') {
-            state.unit = 'M/S'
-            state.value = state.value / 2.237
-        }
+        return conversionToMm;
     }
 
     function toString() {
@@ -252,55 +277,93 @@ function Wind (direction, time, place, type, unit, value) {
     }
 
     return {
-        ...weatherDataState, getDirection, convertToMPH, convertToMperS, toString
+        ...weatherDataState,
+        precipitationType,
+        convertToInches,
+        convertToMM,
+        toString
     }
 }
 
-// CLOUD COVERAGE
-function CloudCoverage(time, place, type, unit, value, sky) {
+// PRECIPITATION TESTER
+// let data = Precipitation(Date(), 'Horsens', 'Temperature', 'Inch', '7' )
+// data = data.convertToMM()
+// console.log(data.toString())
+// END OF PRECIPITATION TESTING
 
-    const state = { time, place, type, unit, value, sky }
+// WIND
+function Wind (directionTo, time, place, type, unit, value) {
+
+    const state = { directionTo, time, place, type, unit, value }
     const weatherDataState = WeatherData(state)
 
-    function getSkyStatus() {
-        switch (state.value) {
-            case 0:
-                state.sky = "the sky is empty";
-                break;
-            case 1:
-                state.sky = "Clear";
-                break;
-            case 2:
-                state.sky = "Clear";
-                break;
-            case 3:
-                state.sky = "Kinda cloudy";
-                break;
-            case 4:
-                state.sky = "Half Cloudy";
-                break;
-            case 5:
-                state.sky = "Half Cloudy";
-                break;
-            case 6:
-                state.sky = "very Cloudy";
-                break;
-            case 7:
-                state.sky = "very Cloudy";
-                break;
-            case 8:
-                state.sky = "Completely Cloudy";
-                break;
-            case 9:
-                state.sky = "obstructed from view";
-        }
-        return "the sky is " + state.sky;
+    function direction() {
+        return state.directionTo
+    }
+
+    function convertToMPH() {
+        const conversionToMph = (state.unit === 'M/S')
+            ? new Wind(state.directionTo, state.time, state.place, state.type, 'MPH', state.value * 2.237)
+            : state.value
+        return conversionToMph;
+
+        // if (state.unit === 'M/S') {
+        //     state.unit = 'MPH'
+        //     state.value = state.value * 2.237
+        // }
+    }
+
+    function convertToMperS() {
+        const conversionToMperS = (state.unit === 'MPH')
+            ? new Wind(state.directionTo, state.time, state.place, state.type, 'M/S', state.value / 2.237)
+            : state.value
+        return conversionToMperS;
+
+        // if (state.unit === 'MPH') {
+        //     state.unit = 'M/S'
+        //     state.value = state.value / 2.237
+        // }
+    }
+
+    function toString() {
+        return state
     }
 
     return {
-        ...weatherDataState, getSkyStatus
+        ...weatherDataState, convertToMPH, convertToMperS, toString
     }
 }
+
+// WIND TESTING
+// let data = Wind('South', Date(), 'Horsens', 'Wind', 'MPH', '7' )
+// data = data.convertToMperS()
+// console.log(data.toString())
+//END OF WIND TESTING
+
+// CLOUD COVERAGE
+function CloudCoverage(time, place, type, unit, value) {
+
+    const state = { time, place, type, unit, value}
+    const weatherDataState = WeatherData(state)
+
+    function getSkyStatus() {
+        return state.value;
+    }
+
+    function toString() {
+        return state
+    }
+
+    return {
+        ...weatherDataState, getSkyStatus, toString
+    }
+}
+
+// CLOUD TESTING
+// let data = CloudCoverage(Date(), 'Horsens', 'Cloud', '%', '5')
+// //data = data.getSkyStatus()
+// console.log(data.toString())
+//END OF CLOUD TESTING
 
 // WEATHER PREDICTION
 function WeatherPrediction(state) {
@@ -316,20 +379,95 @@ function WeatherPrediction(state) {
             && data.getValue() === state.getValue()
     }
 
-    function getMin() {
-        return state.min
+    function from() {
+        return state.form
     }
 
-    function getMax() {
-        return state.max
+    function to() {
+        return state.to
     }
 
     return {
-        ...event, ...type, matches, getMin, getMax
+        ...event, ...type, matches, from, to
     }
 }
 
 // WEATHER FORECAST
+function WeatherForecast() {
+    let placeFilter = ''
+    let typeFilter = ''
+    let periodFilter = ''
+
+    //Contains WeatherPrediction objects
+    let data = []
+    // const filteredData = []
+
+    function forPlace(place) {
+        let newPlaceFilter = data.filter(place);
+        return newPlaceFilter;
+    }
+
+    function forType(type) {
+        let newTypeFilter = data.filter(type);
+        return newTypeFilter;
+    }
+
+    function forPeriod(period) {
+        let newPeriodFilter = data.filter(period);
+        return newPeriodFilter;
+    }
+
+    function including(newData) {
+        return data = data.concat(newData);
+    }
+
+    function convertToUSUnits() {
+        const conversionToUsUnits = data.forEach(dataPoint =>
+            (dataPoint.getType() === 'Wind') ? dataPoint.convertToMPH()
+                : (dataPoint.getType() === 'Temperature') ? dataPoint.convertToF()
+                    : (dataPoint.getType() === 'Precipitation') ? dataPoint.convertToInches()
+                        : conversionToUsUnits)
+        return conversionToUsUnits;
+    }
+
+    function convertToInternationalUnits() {
+        const conversionToInternUnits = data.forEach(dataPoint =>
+            (dataPoint.getType() === 'Wind') ? dataPoint.convertToMperS()
+                : (dataPoint.getType() === 'Temperature') ? dataPoint.convertToC()
+                    : (dataPoint.getType() === 'Precipitation') ? dataPoint.convertToMM()
+                        : conversionToInternUnits)
+        return conversionToInternUnits;
+    }
+
+    //"extraData" is an array of type WeatherPrediction
+    function include(extraData) {
+        data = data.concat(extraData);
+    }
+
+    function averageFromValue(average) {
+        //return average.reduce((temp1, temp2) => (temp1 + temp2)) / average.length;
+    }
+
+    function averageToValue() {
+
+    }
+
+    function getData() {
+        return data
+    }
+
+    return {
+        forPlace,
+        forType,
+        forPeriod,
+        including,
+        convertToUSUnits,
+        convertToInternationalUnits,
+        averageFromValue,
+        averageToValue,
+        getData
+    }
+}
 
 
 // TEMPERATURE PREDICTION
@@ -339,17 +477,19 @@ function TemperaturePrediction(time, place, type, unit, value) {
     const weatherPredictionState = WeatherPrediction(state)
 
     function convertToF() {
-        if (state.unit === 'C') {
-            state.unit = 'F'
-            state.value = state.value * 1.8 + 32
-        }
+        const temperatureInF = (state.unit === 'C')
+            ? new Temperature(state.time, state.place, state.type, 'F', state.value * 1.8 + 32)
+            : state.value
+
+        return temperatureInF;
     }
 
     function convertToC() {
-        if (state.unit === 'F') {
-            state.unit = 'C'
-            state.value = (state.value - 32) / 1.8
-        }
+        const temperatureInF = (state.unit === 'C')
+            ? new Temperature(state.time, state.place, state.type, 'F', state.value * 1.8 + 32)
+            : state.value
+
+        return temperatureInF;
     }
 
     function toString() {
@@ -366,7 +506,7 @@ function PrecipitationPrediction(precipitationType, time, place, type, unit, val
     const state = {precipitationType, time, place, type, unit, value}
     const weatherPredictionState = WeatherPrediction(state)
 
-    function getExpectedTypes() {
+    function types() {
         return ['Light rain', 'Rain', 'Heavy rain', 'Showers']
     }
 
@@ -376,17 +516,19 @@ function PrecipitationPrediction(precipitationType, time, place, type, unit, val
     }
 
     function convertToInches() {
-        if (state.unit === 'MM') {
-            state.unit = 'Inch'
-            state.value = state.value / 25.4
-        }
+        const conversionToInches = (state.unit === 'MM')
+            ? new Precipitation(state.time, state.place, state.type, 'Inch', state.value / 25.4)
+            : state.value
+
+        return conversionToInches;
     }
 
     function convertToMM() {
-        if (state.unit === 'Inch') {
-            state.unit = 'MM'
-            state.value = state.value * 25.4
-        }
+        const conversionToMm = (state.unit === 'Inch')
+            ? new Precipitation(state.time, state.place, state.type, 'MM', state.value * 25.4)
+            : state.value
+
+        return conversionToMm;
     }
 
     function toString() {
@@ -394,7 +536,7 @@ function PrecipitationPrediction(precipitationType, time, place, type, unit, val
     }
 
     return {
-        ...weatherPredictionState, getExpectedTypes, matches, convertToInches, convertToMM, toString
+        ...weatherPredictionState, types, matches, convertToInches, convertToMM, toString
     }
 }
 
@@ -403,7 +545,7 @@ function WindPrediction(direction, time, place, type, unit, value) {
     const state = {direction, time, place, type, unit, value}
     const weatherPredictionState = WeatherPrediction(state)
 
-    function getExpectedDirections() {
+    function directions() {
         return ['West', 'East', 'North', 'South', 'NorthEast', 'NorthWest', 'SouthEast', 'SouthWest']
     }
 
@@ -412,17 +554,17 @@ function WindPrediction(direction, time, place, type, unit, value) {
     }
 
     function convertToMPH() {
-        if (state.unit === 'M/S') {
-            state.unit = 'MPH'
-            state.value = state.value * 2.237
-        }
+        const conversionToMph = (state.unit === 'M/S')
+            ? new Wind(state.directionTo, state.time, state.place, state.type, 'MPH', state.value * 2.237)
+            : state.value
+        return conversionToMph;
     }
 
     function convertToMperS() {
-        if (state.unit === 'MPH') {
-            state.unit = 'M/S'
-            state.value = state.value / 2.237
-        }
+        const conversionToMperS = (state.unit === 'MPH')
+            ? new Wind(state.directionTo, state.time, state.place, state.type, 'M/S', state.value / 2.237)
+            : state.value
+        return conversionToMperS;
     }
 
     function toString() {
@@ -430,7 +572,7 @@ function WindPrediction(direction, time, place, type, unit, value) {
     }
 
     return {
-        ...weatherPredictionState, getExpectedDirections, matches, convertToMPH, convertToMperS, toString
+        ...weatherPredictionState, directions, matches, convertToMPH, convertToMperS, toString
     }
 }
 
@@ -440,38 +582,7 @@ function CloudCoveragePrediction(time, place, type, unit, value, sky) {
     const weatherPredictionState = WeatherPrediction(state)
 
     function getSkyStatus() {
-        switch (state.value) {
-            case 0:
-                state.sky = "the sky is empty";
-                break;
-            case 1:
-                state.sky = "Clear";
-                break;
-            case 2:
-                state.sky = "Clear";
-                break;
-            case 3:
-                state.sky = "Kinda cloudy";
-                break;
-            case 4:
-                state.sky = "Half Cloudy";
-                break;
-            case 5:
-                state.sky = "Half Cloudy";
-                break;
-            case 6:
-                state.sky = "very Cloudy";
-                break;
-            case 7:
-                state.sky = "very Cloudy";
-                break;
-            case 8:
-                state.sky = "Completely Cloudy";
-                break;
-            case 9:
-                state.sky = "obstructed from view";
-        }
-        return "the sky is " + state.sky;
+        return state.value;
     }
 
     return {
