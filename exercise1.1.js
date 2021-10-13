@@ -384,40 +384,40 @@ function WeatherHistory() {
 
 
 //WEATHER HISTORY TESTING
-const fromTester = new Date('December 17, 1995 03:24:00')
-const toTester = new Date('December 17, 2021 05:00:00')
+// const fromTester = new Date('December 17, 1995 03:24:00')
+// const toTester = new Date('December 17, 2021 05:00:00')
 
-const interval = dateInterval(fromTester, toTester) 
+// const interval = dateInterval(fromTester, toTester) 
 
-const currentTime = new Date('September 17, 2000 15:35:00')
+// const currentTime = new Date('September 17, 2000 15:35:00')
 
-const data1 = wind(direction='West', time=currentTime, place= 'Horsens', type='Wind', unit='M/S', value=3)
-const data2 = wind(direction='East', time=currentTime, place= 'Aarhus', type='Wind', unit='MPH', value=15)
+// const data1 = wind(direction='West', time=currentTime, place= 'Horsens', type='Wind', unit='M/S', value=3)
+// const data2 = wind(direction='East', time=currentTime, place= 'Aarhus', type='Wind', unit='MPH', value=15)
 
-const data3 = temperature(time=currentTime, place= 'Horsens', type='Temperature', unit='C', value=30)
-const data4 = temperature(time=currentTime, place= 'Aarhus', type='Temperature', unit='F', value=69)
+// const data3 = temperature(time=currentTime, place= 'Horsens', type='Temperature', unit='C', value=30)
+// const data4 = temperature(time=currentTime, place= 'Aarhus', type='Temperature', unit='F', value=69)
 
-const data5 = precipitation(precipitationType='Rain', time=currentTime, place= 'Horsens', type='Precipitation', unit='MM', value=30)
-const data6 = precipitation(precipitationType='Light Rain', time=currentTime, place= 'Aarhus', type='Precipitation', unit='Inch', value=3)
+// const data5 = precipitation(precipitationType='Rain', time=currentTime, place= 'Horsens', type='Precipitation', unit='MM', value=30)
+// const data6 = precipitation(precipitationType='Light Rain', time=currentTime, place= 'Aarhus', type='Precipitation', unit='Inch', value=3)
 
-dataList = [data1, data2, data3, data4, data5, data6]
-// console.log(dataList)
+// dataList = [data1, data2, data3, data4, data5, data6]
+// // console.log(dataList)
 
-const history = WeatherHistory()
-// history.setPlaceFilter('Horsens')
-// history.setTypeFilter('Temperature')
-history.setPeriodFilter(interval)
-// console.log(history)
-history.add(dataList)
+// const history = WeatherHistory()
+// // history.setPlaceFilter('Horsens')
+// // history.setTypeFilter('Temperature')
+// history.setPeriodFilter(interval)
+// // console.log(history)
+// history.add(dataList)
 
-// console.log(history.getFilteredData())
-list = history.getFilteredData()
+// // console.log(history.getFilteredData())
+// list = history.getFilteredData()
 
-for (let index = 0; index < list.length; index++) {
-    console.log(list[index].toString())
+// for (let index = 0; index < list.length; index++) {
+//     console.log(list[index].toString())
     
-}
-//END OF WEATHER HISTORY TESTING
+// }
+// //END OF WEATHER HISTORY TESTING
 
 
 
