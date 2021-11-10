@@ -6,15 +6,27 @@
     <table>
       <thead>
         <tr>
-          <th><button type="submit" @click="getDataHorsens">Horsens</button></th>
-          <th><button type="submit" @click="getDataCph">Copenhagen</button></th>
-          <th><button type="submit" @click="getDataAarhus">Aarhus</button></th>
-          <th><input type="Date" name="time" v-bind="date"/></th>
+          <th>
+            <button type="submit" @click="getDataHorsens">Horsens</button>
+          </th>
+          <th>
+            <button type="submit" @click="getDataCph">Copenhagen</button>
+          </th>
+          <th>
+            <button type="submit" @click="getDataAarhus">Aarhus</button>
+          </th>
+          <th>
+            <input type="Date" name="time" v-bind="date"/>
+          </th>
+        </tr>
+        <tr>
+          <th>{{ data.items.value }}</th>
+          <th>{{ data.items.type }}</th>
+          <th>{{ data.items.unit }}</th>
         </tr>
       </thead>
     </table>
   </div>
-  
 </template>
 <script>
 import axios from "axios";
@@ -27,11 +39,15 @@ export default {
   data() {
     return {
       data: {
-        value:null,
-        type: null,
-        unit: null,
-        time: null,
-        place: null,
+        items: [
+          {
+            value: null,
+            type: null,
+            unit: null,
+            time: null,
+            place: null,
+          },
+        ],
       },
     };
   },
@@ -49,17 +65,18 @@ export default {
     },
     getDataCph() {
       axios.get("http://localhost:8080/data/Copenhagen").then((response) => {
-        this.data = response.data;
+        this.data.items = response.data.bpi;
       });
     },
     getDataHorsens() {
       axios.get("http://localhost:8080/data/Horsens").then((response) => {
-        this.data = response.data;
+        console.log(response);
+        this.data = response.data.bpi;
       });
     },
     getDataAarhus() {
       axios.get("http://localhost:8080/data/Aarhus").then((response) => {
-        this.data = response.data;
+        this.data = response.data.bpi;
       });
     },
   },
