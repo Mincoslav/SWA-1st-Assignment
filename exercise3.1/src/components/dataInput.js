@@ -1,6 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
+import { fetchCityDataCopenhagen, fetchCityDataAarhus, fetchCityDataHorsens } from "../actions/cityDataActions";
+import { store } from "../app/store";
 
+/*
+This a quick and dirty solution to the "each action should refresh data"
+If I had more time I'd do it like this: dispatch an action from the submit button to the cityDataReducer
+that would send the post request and handle the reload.
+*/
 export function DataSubmitForm() {
 	const [inputs, setInputs] = useState({});
 
@@ -23,6 +30,16 @@ export function DataSubmitForm() {
 				place: inputs.place
 			})
 			.then(function (response) {
+				
+				if (inputs.place === 'Copenhagen') {
+					store.dispatch(fetchCityDataCopenhagen())
+				}
+				else if (inputs.place === 'Horsens') {
+					store.dispatch(fetchCityDataHorsens())
+				}
+				else if (inputs.place === 'Aarhus') {
+					store.dispatch(fetchCityDataAarhus())
+				}
 				alert(response.statusText);
 				console.log(response);
 			})
