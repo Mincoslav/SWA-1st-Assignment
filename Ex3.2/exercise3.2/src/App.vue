@@ -6,6 +6,7 @@
     <table>
       <thead>
         <tr>
+          <th></th>
           <th>
             <button type="submit" @click="getDataHorsens">Horsens</button>
           </th>
@@ -15,32 +16,55 @@
           <th>
             <button type="submit" @click="getDataAarhus">Aarhus</button>
           </th>
-          <th>
-         
-          </th>
         </tr>
         <tr>
-          <td>{{data.items[data.items.length-3].value}}</td>
-          <td>{{ data.items[0].type }}</td>
-          <th>{{ data.items[0].unit }}</th>
+          <th>temperature</th>
+          <td>
+            {{ data.temperaturesData[data.temperaturesData.length - 1].value }}
+          </td>
+          <td>
+            {{ data.temperaturesData[data.temperaturesData.length - 1].type }}
+          </td>
+          <td>
+            {{ data.temperaturesData[data.temperaturesData.length - 1].unit }}
+          </td>
         </tr>
-
-        <thead>
-				<tr>
-					<th>Latest Temperature</th>
-					<th>Latest Precipitation</th>
-					<th>Latest Wind</th>
-					<th>Latest Cloud Coverage</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>{data.items.latestTemperature}</td>
-					<td>{data.historicalData.latestPrecipitation}</td>
-					<td>{data.historicalData.latestWind}</td>
-					<td>{data.historicalData.latestClouds}</td>
-				</tr>
-			</tbody>
+         <tr>
+          <th>precipitation</th>
+          <td>
+            {{ data.precipitationsData[data.precipitationsData.length - 1].value }}
+          </td>
+          <td>
+            {{ data.precipitationsData[data.precipitationsData.length - 1].type }}
+          </td>
+          <td>
+            {{ data.precipitationsData[data.precipitationsData.length - 1].unit }}
+          </td>
+        </tr>
+        <tr>
+          <th>wind</th>
+          <td>
+            {{ data.windsData[data.windsData.length - 1].value }}
+          </td>
+          <td>
+            {{ data.windsData[data.windsData.length - 1].type }}
+          </td>
+          <td>
+            {{ data.windsData[data.windsData.length - 1].unit }}
+          </td>
+        </tr>
+        <tr>
+          <th>cloud</th>
+          <td>
+            {{ data.cloudsData[data.cloudsData.length - 1].value }}
+          </td>
+          <td>
+            {{ data.cloudsData[data.cloudsData.length - 1].type }}
+          </td>
+          <td>
+            {{ data.cloudsData[data.cloudsData.length - 1].unit }}
+          </td>
+        </tr>
 
       </thead>
     </table>
@@ -55,22 +79,12 @@ export default {
     FormToGoToServer,
   },
   data() {
-  
     return {
       data: {
-         temperaturesData = [],
-        precipitationsData = [],
-        windsData = [],
-        cloudsData = [],
-        items: [
-          {
-            value: '',
-            type: '',
-            unit: '',
-            time: '',
-            place: '',
-          },
-        ],
+        temperaturesData: [{ value: "", type: "", unit: "" }],
+        precipitationsData: [{ value: "", type: "", unit: "" }],
+        windsData: [{ value: "", type: "", unit: "" }],
+        cloudsData: [{ value: "", type: "", unit: "" }],
       },
     };
   },
@@ -87,35 +101,51 @@ export default {
         });
     },
     getDataCph() {
-      axios.get("http://localhost:8080/data/Copenhagen").then((response) => {
-        this.data.items = response.data;
-        console.log(this.data.items);
-        
-        
-        //FOR LOOP NEEDS TO BE HERE
-        if (element.type === "temperature") {
-				temperaturesData.push(element);
-			} else if (element.type === "precipitation") {
-				precipitationsData.push(element);
-			} else if (element.type === "wind speed") {
-				windsData.push(element);
-			} else if (element.type === "cloud coverage") {
-				cloudsData.push(element);
-			}
+      axios.get("http://localhost:8080/data/Copenhagen").then(response => {
+        for (let index = 0; index < response.data.length; index++) {
+          if (response.data[index].type === "temperature") {
+            this.data.temperaturesData[index] = response.data[index];
+          } else if (response.data[index].type === "precipitation") {
+            this.data.precipitationsData[index] = response.data[index];
+          } else if (response.data[index].type === "wind speed") {
+            this.data.windsData[index] = response.data[index];
+          } else if (response.data[index].type === "cloud coverage") {
+            this.data.cloudsData[index] = response.data[index];
+          }
+        }
       });
     },
     getDataHorsens() {
-      axios.get("http://localhost:8080/data/Horsens").then((response) => {
-        console.log(response);
-        this.data.items = response.data;
+      axios.get("http://localhost:8080/data/Horsens").then(response => {
+        for (let index = 0; index < response.data.length; index++) {
+          if (response.data[index].type === "temperature") {
+            this.data.temperaturesData[index] = response.data[index];
+          } else if (response.data[index].type === "precipitation") {
+            this.data.precipitationsData[index] = response.data[index];
+          } else if (response.data[index].type === "wind speed") {
+            this.data.windsData[index] = response.data[index];
+          } else if (response.data[index].type === "cloud coverage") {
+            this.data.cloudsData[index] = response.data[index];
+          }
+        }
+        console.log( this.data.temperaturesData[this.data.temperaturesData.length - 1].value )
       });
     },
     getDataAarhus() {
-      axios.get("http://localhost:8080/data/Aarhus").then((response) => {
-        this.data.items = response.data;
+      axios.get("http://localhost:8080/data/Aarhus").then(response => {
+        for (let index = 0; index < response.data.length; index++) {
+          if (response.data[index].type === "temperature") {
+            this.data.temperaturesData[index] = response.data[index];
+          } else if (response.data[index].type === "precipitation") {
+            this.data.precipitationsData[index] = response.data[index];
+          } else if (response.data[index].type === "wind speed") {
+            this.data.windsData[index] = response.data[index];
+          } else if (response.data[index].type === "cloud coverage") {
+            this.data.cloudsData[index] = response.data[index];
+          }
+        }
       });
     },
-    
   },
 };
 </script>
