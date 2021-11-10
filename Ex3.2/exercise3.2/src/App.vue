@@ -24,6 +24,24 @@
           <td>{{ data.items[0].type }}</td>
           <th>{{ data.items[0].unit }}</th>
         </tr>
+
+        <thead>
+				<tr>
+					<th>Latest Temperature</th>
+					<th>Latest Precipitation</th>
+					<th>Latest Wind</th>
+					<th>Latest Cloud Coverage</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{data.items.latestTemperature}</td>
+					<td>{data.historicalData.latestPrecipitation}</td>
+					<td>{data.historicalData.latestWind}</td>
+					<td>{data.historicalData.latestClouds}</td>
+				</tr>
+			</tbody>
+
       </thead>
     </table>
   </div>
@@ -37,8 +55,13 @@ export default {
     FormToGoToServer,
   },
   data() {
+  
     return {
       data: {
+         temperaturesData = [],
+        precipitationsData = [],
+        windsData = [],
+        cloudsData = [],
         items: [
           {
             value: '',
@@ -67,6 +90,18 @@ export default {
       axios.get("http://localhost:8080/data/Copenhagen").then((response) => {
         this.data.items = response.data;
         console.log(this.data.items);
+        
+        
+        //FOR LOOP NEEDS TO BE HERE
+        if (element.type === "temperature") {
+				temperaturesData.push(element);
+			} else if (element.type === "precipitation") {
+				precipitationsData.push(element);
+			} else if (element.type === "wind speed") {
+				windsData.push(element);
+			} else if (element.type === "cloud coverage") {
+				cloudsData.push(element);
+			}
       });
     },
     getDataHorsens() {
