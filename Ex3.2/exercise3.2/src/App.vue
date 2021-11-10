@@ -2,7 +2,19 @@
   <div id="app">
     <h3>Create New Data</h3>
     <FormToGoToServer @on-submit="submit" />
+    <h3>Data List</h3>
+    <table>
+      <thead>
+        <tr>
+          <th><button type="submit" @click="getDataHorsens">Horsens</button></th>
+          <th><button type="submit" @click="getDataCph">Copenhagen</button></th>
+          <th><button type="submit" @click="getDataAarhus">Aarhus</button></th>
+          <th><input type="Date" name="time" v-bind="date"/></th>
+        </tr>
+      </thead>
+    </table>
   </div>
+  
 </template>
 <script>
 import axios from "axios";
@@ -15,11 +27,11 @@ export default {
   data() {
     return {
       data: {
-        value: "",
-        type: "",
-        unit: "",
-        time: "",
-        place: "",
+        value:null,
+        type: null,
+        unit: null,
+        time: null,
+        place: null,
       },
     };
   },
@@ -36,23 +48,17 @@ export default {
         });
     },
     getDataCph() {
-      axios
-        .get("http://localhost:8080/data/Copenhagen")
-        .then(response => {
+      axios.get("http://localhost:8080/data/Copenhagen").then((response) => {
         this.data = response.data;
       });
     },
     getDataHorsens() {
-      axios
-        .get("http://localhost:8080/data/Horsens")
-        .then(response => {
+      axios.get("http://localhost:8080/data/Horsens").then((response) => {
         this.data = response.data;
       });
     },
     getDataAarhus() {
-      axios
-        .get("http://localhost:8080/data/Aarhus")
-        .then(response => {
+      axios.get("http://localhost:8080/data/Aarhus").then((response) => {
         this.data = response.data;
       });
     },
