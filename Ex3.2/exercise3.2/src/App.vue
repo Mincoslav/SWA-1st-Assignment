@@ -16,13 +16,13 @@
             <button type="submit" @click="getDataAarhus">Aarhus</button>
           </th>
           <th>
-            <input type="Date" name="time" v-bind="date"/>
+         
           </th>
         </tr>
         <tr>
-          <th>{{ data.items.value }}</th>
-          <th>{{ data.items.type }}</th>
-          <th>{{ data.items.unit }}</th>
+          <td>{{data.items[data.items.length-3].value}}</td>
+          <td>{{ data.items[0].type }}</td>
+          <th>{{ data.items[0].unit }}</th>
         </tr>
       </thead>
     </table>
@@ -41,11 +41,11 @@ export default {
       data: {
         items: [
           {
-            value: null,
-            type: null,
-            unit: null,
-            time: null,
-            place: null,
+            value: '',
+            type: '',
+            unit: '',
+            time: '',
+            place: '',
           },
         ],
       },
@@ -65,20 +65,22 @@ export default {
     },
     getDataCph() {
       axios.get("http://localhost:8080/data/Copenhagen").then((response) => {
-        this.data.items = response.data.bpi;
+        this.data.items = response.data;
+        console.log(this.data.items);
       });
     },
     getDataHorsens() {
       axios.get("http://localhost:8080/data/Horsens").then((response) => {
         console.log(response);
-        this.data = response.data.bpi;
+        this.data.items = response.data;
       });
     },
     getDataAarhus() {
       axios.get("http://localhost:8080/data/Aarhus").then((response) => {
-        this.data = response.data.bpi;
+        this.data.items = response.data;
       });
     },
+    
   },
 };
 </script>
