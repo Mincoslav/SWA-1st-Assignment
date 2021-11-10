@@ -1,6 +1,6 @@
-// import getCityData from "./cityDataReducer";
-// import {combineReducers} from 'redux'
+import getCityData from "./cityDataReducer";
+import {combineReducers} from 'redux'
 
-// export default combineReducers({
-//     getCityData
-// })
+export default combineReducers({
+    cityData: getCityData,
+})
