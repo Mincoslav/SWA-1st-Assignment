@@ -51,6 +51,7 @@ function success(responseText) {
 		getDayValues(getDaysAgo(2), temperatures),
 		getDayValues(getDaysAgo(1), temperatures)
 	];
+	console.log(last5daysTemperatures)
 	let last5daysWind = [
 		getDayValues(getDaysAgo(5), winds),
 		getDayValues(getDaysAgo(4), winds),
@@ -67,19 +68,10 @@ function success(responseText) {
 	];
 
 	let predictions = {
-		temperaturePredictions: getDayValues(
-			"",
-			temperatures,
-			new Date(),
-			getDaysAgo(-1)
-		),
+		temperaturePredictions: getDayValues("", temperatures, new Date(), getDaysAgo(-1)),
 		cloudPredictions: getDayValues("", clouds, new Date(), getDaysAgo(-1)),
 		windPredictions: getDayValues("", winds, new Date(), getDaysAgo(-1)),
-		rainPredictions: getDayValues(
-			"",
-			precipitations,
-			new Date(),
-			getDaysAgo(-1)
+		rainPredictions: getDayValues("", precipitations, new Date(), getDaysAgo(-1)
 		)
 	};
 
@@ -110,9 +102,9 @@ function getData(url) {
 	// .then(data => success(data))
 }
 
-function getDaysAgo(b) {
+function getDaysAgo(daysAgo) {
 	var a = new Date();
-	a.setDate(a.getDate() - b);
+	a.setDate(a.getDate() - daysAgo);
 	return a;
 }
 

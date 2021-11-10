@@ -7,16 +7,13 @@ export function DataSubmitForm() {
 	const handleChange = (event) => {
 		const name = event.target.name;
 		const value = event.target.value;
-		console.log(name);
-		console.log(value);
 		setInputs((values) => ({ ...values, [name]: value }));
 	};
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		// alert(inputs);
-		console.log(inputs);
-		//should add a check for wind and rain
+		
+		//should add a check/input for wind and rain
 		axios
 			.post("http://localhost:8080/data", {
 				value: inputs.value,
@@ -26,12 +23,17 @@ export function DataSubmitForm() {
 				place: inputs.place
 			})
 			.then(function (response) {
-				alert(response.statusText)
+				alert(response.statusText);
 				console.log(response);
 			})
 			.catch(function (error) {
 				console.log(error);
 			});
+		setInputs({
+			type: "",
+			unit: "",
+			place: ""
+		});
 	};
 
 	return (
@@ -42,10 +44,10 @@ export function DataSubmitForm() {
 				<br />
 				<select name="type" value={inputs.type} onChange={handleChange}>
 					<option value=""></option>
-					<option value="temperature">Temperature</option>
-					<option value="wind">Wind</option>
-					<option value="cloudCoverage">Cloud Coverage</option>
-					<option value="precipitation">Precipitation</option>
+					<option value={"temperature" || ""}>Temperature</option>
+					<option value={"wind speed" || ""}>Wind</option>
+					<option value={"cloud coverage" || ""}>Cloud Coverage</option>
+					<option value={"precipitation" || ""}>Precipitation</option>
 				</select>
 			</label>
 			<br />
@@ -54,9 +56,9 @@ export function DataSubmitForm() {
 				<br />
 				<select name="place" value={inputs.city} onChange={handleChange}>
 					<option value=""></option>
-					<option value="Horsens">Horsens</option>
-					<option value="Aarhus">Aarhus</option>
-					<option value="Copenhagen">Copenhagen</option>
+					<option value={"Horsens" || ""}>Horsens</option>
+					<option value={"Aarhus" || ""}>Aarhus</option>
+					<option value={"Copenhagen" || ""}>Copenhagen</option>
 				</select>
 			</label>
 			<br />
@@ -92,7 +94,7 @@ export function DataSubmitForm() {
 				<input
 					name="time"
 					type="datetime-local"
-					value={inputs.time}
+					value={inputs.time || ""}
 					onChange={handleChange}
 				/>
 			</label>
