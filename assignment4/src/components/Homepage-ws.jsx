@@ -42,7 +42,7 @@ export const Homepage = () => {
 							}
 						]
 					};
-                }
+				}
 			}
 			// console.log("DATA: ");
 			// console.log(JSON.parse(event.data));
@@ -50,7 +50,7 @@ export const Homepage = () => {
 			// console.log(warnings);
 			const severity = getValueFromHtmlElement("severity-text-box");
 			const newWarnings = filterBySeverity(warnings, severity);
-            console.log(newWarnings)
+			console.log(newWarnings);
 			const changedWarnings = filterSinceLastUpdate(warningsCache, newWarnings);
 
 			// Clear the cache
@@ -83,7 +83,7 @@ export const Homepage = () => {
 	const onUnsubscribe = () => {
 		socket.send("unsubscribe");
 		isSubscribed = false;
-        console.log(`[${new Date().toISOString()}]: Unsubscribed`);
+		console.log(`[${new Date().toISOString()}]: Unsubscribed`);
 	};
 
 	useEffect(() => {
