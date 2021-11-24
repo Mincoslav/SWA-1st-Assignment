@@ -44,7 +44,7 @@ export const displayWarnings = (tableId, warnings) => {
         unitCell.innerHTML = warning.prediction.unit;
         placeCell.innerHTML = warning.prediction.place;
     })
-    console.log(`Appended to ${tableId}: ${JSON.stringify(warnings)}`)
+    // console.log(`Appended to ${tableId}: ${JSON.stringify(warnings)}`)
 }
 
 export const getValueFromHtmlElement = elementId => document.getElementById(elementId).value;
